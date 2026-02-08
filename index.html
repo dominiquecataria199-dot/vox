@@ -879,8 +879,16 @@
 
 openMasterclass(id) {
     const origin = window.location.origin === 'null' ? '' : window.location.origin;
-    // On enlève 'modestbranding' qui pose parfois problème et on garde l'essentiel
-    this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&origin=${origin}`;
+    
+    // Paramètres "STEALTH" :
+    // modestbranding=1 : Enlève le gros logo
+    // rel=0 : Pas de vidéos recommandées à la fin
+    // iv_load_policy=3 : Pas d'annotations
+    // controls=1 : Garde les contrôles (sinon on ne peut pas mettre pause)
+    // color=white : Barre de lecture blanche (plus classe que le rouge YouTube)
+    
+    this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&color=white&origin=${origin}`;
+    
     this.showVideoModal = true;
 },
 
@@ -994,17 +1002,19 @@ openMasterclass(id) {
         </button>
         
         <!-- Lecteur Vidéo (Iframe dynamique) -->
-        <template x-if="showVideoModal">
-            <iframe 
-                class="w-full h-full shadow-2xl"
-                :src="videoUrl" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
-        </template>
+ <!-- Lecteur Vidéo -->
+<template x-if="showVideoModal">
+    <iframe 
+        class="w-full h-full shadow-2xl scale-[1.01]" 
+        :src="videoUrl" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+</template>
     </div>
 </div>
 </body>
 </html>
+
 
