@@ -110,8 +110,9 @@
             
             <div class="relative aspect-video bg-void rounded-sm overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.2)] border-8 border-white">
                 <!-- Image d'aperçu (Thumbnail de ta vidéo) -->
-                <img src="https://img.youtube.com/vi/ltDd2dX6igY/maxresdefault.jpg" 
-                     class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition duration-700 grayscale group-hover:grayscale-0">
+<!-- Image de couverture (Julian Treasure TEDx) -->
+                <img src="https://img.youtube.com/vi/crMKLu-UQ7o/maxresdefault.jpg" 
+                    class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition duration-700 grayscale group-hover:grayscale-0">
                 
                 <!-- Bouton Play Glassmorphism -->
                 <div class="absolute inset-0 flex items-center justify-center">
@@ -876,13 +877,12 @@
                 },
 
 
-
-                    openMasterclass(id) {
-                        // On utilise l'ID correct : ltDd2dX6igY
-                        const correctId = 'crMKLu-UQ7o'; 
-                        this.videoUrl = 'https://www.youtube.com/embed/' + correctId + '?autoplay=1&rel=0&modestbranding=1';
-                        this.showVideoModal = true;
-                    },
+openMasterclass(id) {
+    const origin = window.location.origin === 'null' ? '' : window.location.origin;
+    // On enlève 'modestbranding' qui pose parfois problème et on garde l'essentiel
+    this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&origin=${origin}`;
+    this.showVideoModal = true;
+},
 
                 async submitAudit() {
                     this.loading = true;
