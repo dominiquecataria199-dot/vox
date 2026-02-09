@@ -74,23 +74,24 @@
                         </p>
 
                         <div class="flex flex-col items-center gap-6">
-    <!-- BOUTON HERO OPTIMISÉ -->
-    <button @click="scrollTo('audit')" class="group relative px-10 py-5 bg-neon text-white font-bold text-xs md:text-sm tracking-[0.2em] uppercase transition-all hover:bg-white hover:text-void shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center gap-4">
-        <span>Lancer l'Analyse I.A.</span>
-        <!-- Petite animation d'onde sonore -->
-        <div class="flex gap-1 items-end h-4">
-            <div class="w-1 bg-white group-hover:bg-void h-2 animate-[equalizer_0.5s_infinite]"></div>
-            <div class="w-1 bg-white group-hover:bg-void h-4 animate-[equalizer_0.5s_infinite_0.1s]"></div>
-            <div class="w-1 bg-white group-hover:bg-void h-3 animate-[equalizer_0.5s_infinite_0.2s]"></div>
-        </div>
-    </button>
-    
-    <!-- SOUS-TEXTE RASSURANT -->
-    <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-        Système actif • Accès Gratuit
-    </p>
-</div>
+                            <!-- BOUTON HERO : DÉFI D'AUTORITÉ -->
+                            <button @click="scrollTo('audit')" class="group relative px-10 py-5 bg-neon text-white font-bold text-xs md:text-sm tracking-[0.25em] uppercase transition-all hover:bg-white hover:text-void shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] flex items-center gap-4 border border-neon/50">
+                                <span>Tester mon Autorité</span>
+                                
+                                <!-- Animation Onde Sonore -->
+                                <div class="flex gap-1 items-end h-4">
+                                    <div class="w-1 bg-white group-hover:bg-void h-2 animate-[equalizer_0.5s_infinite]"></div>
+                                    <div class="w-1 bg-white group-hover:bg-void h-5 animate-[equalizer_0.5s_infinite_0.1s]"></div>
+                                    <div class="w-1 bg-white group-hover:bg-void h-3 animate-[equalizer_0.5s_infinite_0.2s]"></div>
+                                </div>
+                            </button>
+                            
+                            <!-- SOUS-TEXTE -->
+                            <p class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                VOX MASTERY SYTEME • Gratuit
+                            </p>
+                        </div>
                     </div>
                 </header>
 
@@ -1063,6 +1064,7 @@ openMasterclass(id) {
 </div>
 </body>
 </html>
+
 
 
 
