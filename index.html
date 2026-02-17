@@ -1582,25 +1582,9 @@ async submitApplication() {
     </div>
 </div>
 
-
-
-                    <!-- CAPSULE D'ACTION FURTIVE (Apparaît après 1000px de scroll) -->
-<div x-data="{ show: false }" 
-     @scroll.window="show = (window.pageYOffset > 1000) ? true : false"
-     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-500"
-     :class="show ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'"
-     x-cloak>
-    
-    <button @click="showAppModal = true" 
-            class="flex items-center gap-3 px-6 py-3 bg-void/80 backdrop-blur-md border border-neon/30 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-neon hover:border-neon transition-all group">
-        
-        <span class="w-2 h-2 rounded-full bg-neon group-hover:bg-white animate-pulse"></span>
-        <span class="font-heading text-xs text-white tracking-[0.2em] uppercase">Candidater</span>
-    
-    </button>
-</div>
 </body>
 </html>
+
 
 
 
