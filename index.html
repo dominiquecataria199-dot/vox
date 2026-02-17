@@ -1180,13 +1180,21 @@
                                 Recevez chaque semaine une analyse de rhétorique et des stratégies d'influence réservées aux décideurs. Zéro spam. Uniquement de la haute performance.
                             </p>
                         </div>
-                        <div>
-                            <form @submit.prevent="submitLead" class="flex flex-col sm:flex-row gap-3">
-                                <input type="email" x-model="leadEmail" placeholder="Email professionnel" required 
-                                       class="flex-1 bg-white/5 border border-white/10 p-4 text-white focus:border-neon outline-none text-xs rounded-sm transition-all">
-                                <button type="submit" class="bg-neon text-white px-8 py-4 font-bold uppercase text-[10px] tracking-widest hover:bg-white hover:text-void transition-all rounded-sm flex justify-center items-center">
+                        <div class="mt-8">
+                            <form @submit.prevent="submitLead" class="flex flex-col sm:flex-row gap-0 overflow-hidden rounded-sm border border-white/10 focus-within:border-neon transition-all">
+                                <input type="email" 
+                                       x-model="leadEmail" 
+                                       placeholder="Email professionnel" 
+                                       required 
+                                       class="flex-1 bg-white/5 p-4 text-white outline-none text-xs min-w-0">
+                                
+                                <button type="submit" 
+                                        class="bg-neon hover:bg-white text-white hover:text-void px-8 py-4 font-bold uppercase text-[10px] tracking-widest transition-all flex items-center justify-center min-w-[140px]">
+                                    <!-- Texte visible uniquement si on ne charge pas -->
                                     <span x-show="!loadingLead">S'inscrire</span>
-                                    <i x-show="loadingLead" class="fa-solid fa-circle-notch fa-spin"></i>
+                                    
+                                    <!-- Icône de chargement visible uniquement pendant l'envoi -->
+                                    <i x-show="loadingLead" class="fa-solid fa-circle-notch fa-spin text-lg" x-cloak></i>
                                 </button>
                             </form>
                             <p class="text-[8px] text-gray-700 mt-4 uppercase tracking-tighter">Votre confidentialité est protégée par cryptage SSL.</p>
@@ -1276,46 +1284,72 @@
                 get timerStr() { return `00:${this.seconds.toString().padStart(2, '0')}`; },
                 scrollTo(id) { document.getElementById(id).scrollIntoView({behavior: 'smooth'}); },
                 mode: 'full',
+                // À mettre à l'intérieur du "return { ... }"
+                leadEmail: '',
+                loadingLead: false,
+                WEBHOOK_LEAD: 'https://hook.eu1.make.com/TON_LIEN_WEBHOOK', // Remplace par ton lien Make
+                
+                async submitLead() {
+                    if (!this.leadEmail) return;
+                    this.loadingLead = true;
+                    try {
+                        await fetch(this.WEBHOOK_LEAD, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                email: this.leadEmail, 
+                                source: 'footer_insiders',
+                                date: new Date().toLocaleString()
+                            })
+                        });
+                        alert("Demande d'accès envoyée. Bienvenue parmi les Insiders.");
+                        this.leadEmail = '';
+                    } catch (e) {
+                        alert("Erreur technique. Réessayez plus tard.");
+                    } finally {
+                        this.loadingLead = false;
+                    }
+                }                
 
 
 
-
-
-
-
-
-  init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const stepParam = urlParams.get('step');
-            const emailParam = urlParams.get('email');
-
-            // Pré-remplissage email si présent
-            if (emailParam) {
-                this.form.email = emailParam;
-                this.appData.email = emailParam;
-            }
-
-            // LOGIQUE CAMÉLÉON
-            if (stepParam === 'audit') {
-                // Cas : Il a candidaté, il doit faire l'audit
-                this.mode = 'audit_only';
-                setTimeout(() => this.scrollTo('audit-section'), 500);
-            } 
-            else if (stepParam === 'apply') {
-                // Cas : Il a fait l'audit, il doit candidater
-                this.mode = 'apply_only';
-                // On cache la section audit, on montre la vente et on ouvre la modale
-                setTimeout(() => this.openAppModal(), 1000);
-            } 
-            else {
-                // Cas normal
-                this.mode = 'full';
-            }
-        },
 
 
 
                 
+                
+                  init() {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const stepParam = urlParams.get('step');
+                            const emailParam = urlParams.get('email');
+                
+                            // Pré-remplissage email si présent
+                            if (emailParam) {
+                                this.form.email = emailParam;
+                                this.appData.email = emailParam;
+                            }
+                
+                            // LOGIQUE CAMÉLÉON
+                            if (stepParam === 'audit') {
+                                // Cas : Il a candidaté, il doit faire l'audit
+                                this.mode = 'audit_only';
+                                setTimeout(() => this.scrollTo('audit-section'), 500);
+                            } 
+                            else if (stepParam === 'apply') {
+                                // Cas : Il a fait l'audit, il doit candidater
+                                this.mode = 'apply_only';
+                                // On cache la section audit, on montre la vente et on ouvre la modale
+                                setTimeout(() => this.openAppModal(), 1000);
+                            } 
+                            else {
+                                // Cas normal
+                                this.mode = 'full';
+                            }
+                        },
+                
+                
+                
+                                
 
                 openAppModal() {
                     // On synchronise l'email de l'audit vers la candidature automatiquement
@@ -1584,6 +1618,7 @@ async submitApplication() {
 
 </body>
 </html>
+
 
 
 
