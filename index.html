@@ -64,12 +64,17 @@
 
                 <body class="bg-void text-gray-200 font-body antialiased" x-data="coachingSystem()">
 
-                <!-- TOP BAR (Adaptée au bleu) -->
-                <div class="bg-neon text-white text-[10px] text-center py-2 font-mono tracking-[0.3em] uppercase">
-                    Accès Restreint : Cercle des Décideurs • VOX MASTERY 2026 
+                <!-- TOP BAR RESPONSIVE -->
+                <div class="bg-neon text-white text-[9px] md:text-[10px] text-center py-2.5 font-mono uppercase px-4 sticky top-0 z-[100]">
+                    <div class="max-w-7xl mx-auto flex justify-center items-center gap-4 overflow-hidden whitespace-nowrap">
+                        <!-- Version Mobile (plus courte) -->
+                        <span class="md:hidden tracking-wider">Accès Restreint • VOX MASTERY 2026</span>
+                        <!-- Version Desktop (complète) -->
+                        <span class="hidden md:inline tracking-[0.3em]">Accès Restreint : Cercle des Décideurs • VOX MASTERY 2026</span>
+                    </div>
                 </div>
 
-                                            <!-- HEADER 1 : VERSION HYBRIDE (Vente Standard OU Suite Audit) -->
+                <!-- HEADER 1 : VERSION HYBRIDE (Vente Standard OU Suite Audit) -->
                 <!-- S'affiche si on n'est PAS en mode "Audit Seul" -->
                 <header x-show="mode !== 'audit_only'" class="relative min-h-screen flex items-center justify-center overflow-hidden px-6 bg-void">
                     
@@ -1160,11 +1165,86 @@
         </div>
     </div>
 </div>
+
                     
-    <!-- FOOTER -->
-    <footer class="py-20 bg-void border-t border-white/5 text-center">
-        <p class="text-[10px] font-mono text-gray-600 tracking-widest uppercase">VOX MASTERY © 2026 • Systèmes de Rhétorique de Haut Niveau</p>
-    </footer>
+                    
+            <!-- FOOTER EXÉCUTIF RESPONSIVE -->
+            <footer class="bg-void border-t border-white/5 pt-20 pb-10" x-show="mode !== 'audit_only'">
+                <div class="max-w-7xl mx-auto px-6">
+                    
+                    <!-- SECTION 1 : LEAD MAGNET (Scénario C) -->
+                    <div class="grid lg:grid-cols-2 gap-12 items-center pb-20 border-b border-white/5">
+                        <div>
+                            <h4 class="font-heading text-3xl text-white uppercase mb-4 tracking-tight">Rejoindre les Insiders</h4>
+                            <p class="text-gray-500 text-sm max-w-md font-light leading-relaxed">
+                                Recevez chaque semaine une analyse de rhétorique et des stratégies d'influence réservées aux décideurs. Zéro spam. Uniquement de la haute performance.
+                            </p>
+                        </div>
+                        <div>
+                            <form @submit.prevent="submitLead" class="flex flex-col sm:flex-row gap-3">
+                                <input type="email" x-model="leadEmail" placeholder="Email professionnel" required 
+                                       class="flex-1 bg-white/5 border border-white/10 p-4 text-white focus:border-neon outline-none text-xs rounded-sm transition-all">
+                                <button type="submit" class="bg-neon text-white px-8 py-4 font-bold uppercase text-[10px] tracking-widest hover:bg-white hover:text-void transition-all rounded-sm flex justify-center items-center">
+                                    <span x-show="!loadingLead">S'inscrire</span>
+                                    <i x-show="loadingLead" class="fa-solid fa-circle-notch fa-spin"></i>
+                                </button>
+                            </form>
+                            <p class="text-[8px] text-gray-700 mt-4 uppercase tracking-tighter">Votre confidentialité est protégée par cryptage SSL.</p>
+                        </div>
+                    </div>
+            
+                    <!-- SECTION 2 : NAVIGATION & INFOS -->
+                    <div class="py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div class="col-span-2 md:col-span-1">
+                            <div class="font-heading text-xl text-white tracking-widest mb-6 uppercase">VOX MASTERY</div>
+                            <p class="text-gray-600 text-[10px] leading-relaxed uppercase tracking-widest">
+                                Systèmes de Rhétorique <br> de Haut Niveau pour <br> Dirigeants & Experts.
+                            </p>
+                        </div>
+                        
+                        <!-- Liens -->
+                        <div class="space-y-4">
+                            <h5 class="text-white text-[10px] font-bold uppercase tracking-widest">Programme</h5>
+                            <ul class="text-gray-500 text-[10px] space-y-2 uppercase tracking-wider">
+                                <li><a href="#audit" class="hover:text-neon transition">Audit VPA</a></li>
+                                <li><a href="#programme" class="hover:text-neon transition">Mentoring</a></li>
+                                <li><a href="#" class="hover:text-neon transition">Séminaires</a></li>
+                            </ul>
+                        </div>
+            
+                        <div class="space-y-4">
+                            <h5 class="text-white text-[10px] font-bold uppercase tracking-widest">Légal</h5>
+                            <ul class="text-gray-500 text-[10px] space-y-2 uppercase tracking-wider">
+                                <li><a href="#" class="hover:text-neon transition">Confidentialité</a></li>
+                                <li><a href="#" class="hover:text-neon transition">CGV</a></li>
+                                <li><a href="#" class="hover:text-neon transition">Mentions</a></li>
+                            </ul>
+                        </div>
+            
+                        <div class="space-y-4">
+                            <h5 class="text-white text-[10px] font-bold uppercase tracking-widest">Contact</h5>
+                            <p class="text-gray-500 text-[10px] uppercase tracking-wider">
+                                Lagos • Cotonou • Abidjan <br>
+                                support@vox-mastery.com
+                            </p>
+                            <div class="flex gap-4 text-gray-500">
+                                <a href="#" class="hover:text-neon transition"><i class="fa-brands fa-linkedin-in text-sm"></i></a>
+                                <a href="#" class="hover:text-neon transition"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- SECTION 3 : COPYRIGHT -->
+                    <div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p class="text-[9px] font-mono text-gray-700 tracking-widest uppercase">VOX MASTERY SYSTEM © 2026 • ALL RIGHTS RESERVED</p>
+                        <div class="flex gap-6 opacity-30 grayscale items-center">
+                            <i class="fa-brands fa-cc-visa text-xl"></i>
+                            <i class="fa-brands fa-cc-mastercard text-xl"></i>
+                            <i class="fa-brands fa-paypal text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
 
     <script>
         function coachingSystem() {
@@ -1521,6 +1601,7 @@ async submitApplication() {
 </div>
 </body>
 </html>
+
 
 
 
