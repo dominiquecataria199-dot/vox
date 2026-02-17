@@ -1254,289 +1254,226 @@
                 </div>
             </footer>
 
-    <script>
-        function coachingSystem() {
-            return {
-
-                showVideoModal: false,
-                videoUrl: '', 
-                WEBHOOK_AUDIT: 'https://vox-mastery.onrender.com/api/audit',
-                WEBHOOK_APP: 'https://hook.eu1.make.com/l3l3ulw1jaxq2ch4bpl19y5quqqxuzaf',
-                step: 1,
-                scoreIA: 0,
-                authorityIA: 0,
-                clarityIA: 0,
-                silenceIA: 0,
-                wpmIA: 0,
-                diagnosticIA: '',
-                showScanner: false,
-                analysisStatus: '',
-                analysisProgress: 0,
-                loading: false,
-                loadingApp: false,
-                showAppModal: false,
-                seconds: 0,
-                timerInterval: null,
-                mediaRecorder: null,
-                audioChunks: [],
-                form: { name: '', whatsapp: '', email: '' },
-                appData: { name: '', email: '', position: '', challenge: '', whatsapp: '' },
-                get timerStr() { return `00:${this.seconds.toString().padStart(2, '0')}`; },
-                scrollTo(id) { document.getElementById(id).scrollIntoView({behavior: 'smooth'}); },
-                mode: 'full',
-                leadEmail: '',
-                loadingLead: false,
-                WEBHOOK_LEAD: 'https://hook.eu1.make.com/bmwnd6nidksg9kj6jhoxr6z5da4m3lis', 
-                
-                async submitLead() {
-                    if (!this.leadEmail) return;
-                    this.loadingLead = true;
-                    try {
-                        await fetch(this.WEBHOOK_LEAD, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                email: this.leadEmail, 
-                                source: 'footer_insiders',
-                                date: new Date().toLocaleString()
-                            })
-                        });
-                        alert("Demande d'accès envoyée. Bienvenue parmi les Insiders.");
-                        this.leadEmail = '';
-                    } catch (e) {
-                        alert("Erreur technique. Réessayez plus tard.");
-                    } finally {
-                        this.loadingLead = false;
-                    }
-                }                
 
 
+        <script>
+function coachingSystem() {
+    return {
+        showVideoModal: false,
+        videoUrl: '',
+        WEBHOOK_AUDIT: 'https://vox-mastery.onrender.com/api/audit',
+        WEBHOOK_APP: 'https://hook.eu1.make.com/l3l3ulw1jaxq2ch4bpl19y5quqqxuzaf',
+        WEBHOOK_LEAD: 'https://hook.eu1.make.com/bmwnd6nidksg9kj6jhoxr6z5da4m3lis',
+        step: 1,
+        scoreIA: 0,
+        authorityIA: 0,
+        clarityIA: 0,
+        silenceIA: 0,
+        wpmIA: 0,
+        diagnosticIA: '',
+        showScanner: false,
+        analysisStatus: '',
+        analysisProgress: 0,
+        loading: false,
+        loadingApp: false,
+        showAppModal: false,
+        seconds: 0,
+        timerInterval: null,
+        mediaRecorder: null,
+        audioChunks: [],
+        form: { name: '', whatsapp: '', email: '' },
+        appData: { name: '', email: '', position: '', challenge: '', whatsapp: '' },
+        mode: 'full',
+        leadEmail: '',
+        loadingLead: false,
 
+        get timerStr() { 
+            return `00:${this.seconds.toString().padStart(2, '0')}`; 
+        },
 
+        scrollTo(id) { 
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' }); 
+        },
 
+        init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const stepParam = urlParams.get('step');
+            const emailParam = urlParams.get('email');
 
-                
-                
-                  init() {
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const stepParam = urlParams.get('step');
-                            const emailParam = urlParams.get('email');
-                
-                            // Pré-remplissage email si présent
-                            if (emailParam) {
-                                this.form.email = emailParam;
-                                this.appData.email = emailParam;
-                            }
-                
-                            // LOGIQUE CAMÉLÉON
-                            if (stepParam === 'audit') {
-                                // Cas : Il a candidaté, il doit faire l'audit
-                                this.mode = 'audit_only';
-                                setTimeout(() => this.scrollTo('audit-section'), 500);
-                            } 
-                            else if (stepParam === 'apply') {
-                                // Cas : Il a fait l'audit, il doit candidater
-                                this.mode = 'apply_only';
-                                // On cache la section audit, on montre la vente et on ouvre la modale
-                                setTimeout(() => this.openAppModal(), 1000);
-                            } 
-                            else {
-                                // Cas normal
-                                this.mode = 'full';
-                            }
-                        },
-                
-                
-                
-                                
+            if (emailParam) {
+                this.form.email = emailParam;
+                this.appData.email = emailParam;
+            }
 
-                openAppModal() {
-                    // On synchronise l'email de l'audit vers la candidature automatiquement
-                    if (this.form.email) {
-                        this.appData.email = this.form.email;
-                    }
-                    if (this.form.name) {
-                        this.appData.name = this.form.name;
-                    }
-                    if (this.form.whatsapp) {
-                        this.appData.whatsapp = this.form.whatsapp;
-                    }
-                    this.showAppModal = true;
-                },
+            if (stepParam === 'audit') {
+                this.mode = 'audit_only';
+                setTimeout(() => this.scrollTo('audit'), 500);
+            } else if (stepParam === 'apply') {
+                this.mode = 'apply_only';
+                setTimeout(() => this.openAppModal(), 1000);
+            } else {
+                this.mode = 'full';
+            }
+        },
 
+        async submitLead() {
+            if (!this.leadEmail) return;
+            this.loadingLead = true;
+            try {
+                await fetch(this.WEBHOOK_LEAD, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: this.leadEmail, 
+                        source: 'footer_insiders',
+                        date: new Date().toLocaleString()
+                    })
+                });
+                alert("Demande d'accès envoyée. Bienvenue parmi les Insiders.");
+                this.leadEmail = '';
+            } catch (e) {
+                alert("Erreur technique. Réessayez plus tard.");
+            } finally {
+                this.loadingLead = false;
+            }
+        },
 
-                retry() {
-                    this.step = 1;
-                    this.scoreIA = 0;
-                    this.seconds = 0; 
-                    this.wpmIA = 0;
-                    this.diagnosticIA = '';
-                    this.audioChunks = [];
+        openAppModal() {
+            if (this.form.email) this.appData.email = this.form.email;
+            if (this.form.name) this.appData.name = this.form.name;
+            if (this.form.whatsapp) this.appData.whatsapp = this.form.whatsapp;
+            this.showAppModal = true;
+        },
+
+        retry() {
+            this.step = 1;
+            this.scoreIA = 0;
+            this.seconds = 0;
+            this.wpmIA = 0;
+            this.diagnosticIA = '';
+            this.audioChunks = [];
+            this.showScanner = false;
+        },
+
+        async startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.mediaRecorder = new MediaRecorder(stream);
+                this.audioChunks = [];
+                this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data);
+                this.mediaRecorder.onstop = () => { 
+                    this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' }); 
+                };
+                this.mediaRecorder.start();
+                this.step = 2;
+                this.seconds = 0;
+                this.timerInterval = setInterval(() => {
+                    this.seconds++;
+                    if (this.seconds >= 300) this.stopRecording();
+                }, 1000);
+            } catch (e) {
+                alert("Micro requis pour l'analyse.");
+            }
+        },
+
+        stopRecording() {
+            if (this.mediaRecorder) {
+                this.mediaRecorder.stop();
+                this.mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                clearInterval(this.timerInterval);
+                this.step = 3;
+            }
+        },
+
+        openMasterclass(id) {
+            const origin = window.location.origin === 'null' ? '' : window.location.origin;
+            this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&color=white&origin=${origin}`;
+            this.showVideoModal = true;
+        },
+
+        async submitAudit() {
+            this.loading = true;
+            this.showScanner = true;
+
+            const steps = [
+                { msg: "Initialisation du moteur...", p: 12 },
+                { msg: "Analyse du spectre vocal...", p: 35 },
+                { msg: "Évaluation de la clarté...", p: 58 },
+                { msg: "Calcul de l'indice d'autorité...", p: 82 },
+                { msg: "Finalisation du rapport...", p: 96 }
+            ];
+
+            let stepIndex = 0;
+            this.analysisStatus = steps[0].msg;
+            this.analysisProgress = steps[0].p;
+
+            const stepInterval = setInterval(() => {
+                stepIndex++;
+                if (stepIndex < steps.length) {
+                    this.analysisStatus = steps[stepIndex].msg;
+                    this.analysisProgress = steps[stepIndex].p;
+                }
+            }, 1200);
+
+            const formData = new FormData();
+            formData.append('audio', this.audioBlob, 'audit.webm');
+            formData.append('name', this.form.name);
+            formData.append('email', this.form.email);
+            formData.append('whatsapp', this.form.whatsapp);
+            formData.append('duration', this.seconds);
+
+            try {
+                const res = await fetch(this.WEBHOOK_AUDIT, { method: 'POST', body: formData });
+                const data = await res.json();
+
+                setTimeout(() => {
+                    clearInterval(stepInterval);
+                    this.wpmIA = data.wpm;
+                    this.scoreIA = data.score || 0;
+                    this.authorityIA = data.authority || 0;
+                    this.clarityIA = data.clarity || 0;
+                    this.silenceIA = data.silence || 0;
+                    this.diagnosticIA = data.diagnostic || "Analyse terminée.";
+                    this.step = 4;
                     this.showScanner = false;
+                    this.loading = false;
+                }, 1500);
+            } catch (e) {
+                clearInterval(stepInterval);
+                alert("Erreur de connexion au moteur d'analyse.");
+                this.loading = false;
+                this.showScanner = false;
+            }
+        },
 
-                },
-
-
-                
-                async startRecording() {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        this.mediaRecorder = new MediaRecorder(stream);
-                        this.audioChunks = [];
-                        this.mediaRecorder.ondataavailable = e => this.audioChunks.push(e.data);
-                        this.mediaRecorder.onstop = () => { this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' }); };
-                        this.mediaRecorder.start();
-                        this.step = 2;
-                        this.seconds = 0;
-
-                        // CORRECTION ICI : LE TIMER
-                        this.timerInterval = setInterval(() => {
-                            this.seconds++;
-                            
-                            // J'ai passé la limite automatique à 300 secondes (5 minutes)
-                            // L'utilisateur pourra arrêter manuellement avant, mais ça coupe à 5min pour éviter les fichiers trop lourds
-                            if(this.seconds >= 300) {
-                                this.stopRecording();
-                            }
-                        }, 1000);
-
-                    } catch (e) { 
-                        alert("Micro requis pour l'analyse."); 
-                    }
-                },
-
-                stopRecording() {
-                    if(this.mediaRecorder) {
-                        this.mediaRecorder.stop();
-                        this.mediaRecorder.stream.getTracks().forEach(t => t.stop());
-                        clearInterval(this.timerInterval);
-                        this.step = 3;
-                    }
-                },
-
-
-openMasterclass(id) {
-    const origin = window.location.origin === 'null' ? '' : window.location.origin;
-    
-    // Paramètres "STEALTH" :
-    // modestbranding=1 : Enlève le gros logo
-    // rel=0 : Pas de vidéos recommandées à la fin
-    // iv_load_policy=3 : Pas d'annotations
-    // controls=1 : Garde les contrôles (sinon on ne peut pas mettre pause)
-    // color=white : Barre de lecture blanche (plus classe que le rouge YouTube)
-    
-    this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&color=white&origin=${origin}`;
-    
-    this.showVideoModal = true;
-},
-
-
-                    async submitAudit() {
-                                        this.loading = true;
-                                        this.showScanner = true; // Affiche l'écran de scan
-
-                                const steps = [
-                                    { msg: "Initialisation du moteur...", p: 12 },
-                                    { msg: "Analyse du spectre vocal...", p: 35 },
-                                    { msg: "Évaluation de la clarté...", p: 58 },
-                                    { msg: "Calcul de l'indice d'autorité...", p: 82 },
-                                    { msg: "Finalisation du rapport...", p: 96 }
-                                ];
-
-                                let stepIndex = 0;
-
-                                    this.analysisStatus = steps[0].msg;
-                                    this.analysisProgress = steps[0].p;
-                                    const interval = setInterval(() => {
-                                        stepIndex++;
-                                        if (stepIndex < steps.length) {
-                                            this.analysisStatus = steps[stepIndex].msg;
-                                            this.analysisProgress = steps[stepIndex].p;
-                                        }
-                                    }, 1200);// Rythme beaucoup plus rapide (0.8s au lieu de 1.5s)
-
-                                        let currentStep = 0;
-                                        // On fait défiler les messages toutes les 1,2 secondes
-                                        const stepInterval = setInterval(() => {
-                                            if (currentStep < scanSteps.length) {
-                                                this.analysisStatus = scanSteps[currentStep].msg;
-                                                this.analysisProgress = scanSteps[currentStep].p;
-                                                currentStep++;
-                                            }
-                                        }, 1200);
-
-                                        // --- ENVOI RÉEL AU SERVEUR ---
-                                        const formData = new FormData();
-                                        formData.append('audio', this.audioBlob, 'audit.webm');
-                                        formData.append('name', this.form.name);
-                                        formData.append('email', this.form.email);
-                                        formData.append('whatsapp', this.form.whatsapp);
-                                        formData.append('duration', this.seconds);
-
-                                        try {
-                                            const res = await fetch(this.WEBHOOK_AUDIT, { method: 'POST', body: formData });
-                                            const data = await res.json();
-
-                                            // On attend que l'animation soit un peu avancée avant de passer aux résultats
-                                            // pour ne pas "casser" l'effet si le serveur répond trop vite
-                                            setTimeout(() => {
-                                                clearInterval(stepInterval);
-                                                this.wpmIA = data.wpm; 
-                                                this.scoreIA = data.score || 0;
-                                                this.authorityIA = data.authority || 0;
-                                                this.clarityIA = data.clarity || 0;
-                                                this.silenceIA = data.silence || 0;
-                                                this.diagnosticIA = data.diagnostic || "Analyse terminée.";
-                                                
-                                                this.step = 4; // Passage à l'écran de résultats
-                                                this.showScanner = false;
-                                                this.loading = false;
-                                            }, 1500);
-
-                                        } catch (e) { 
-                                            clearInterval(stepInterval);
-                                            alert("Erreur de connexion au moteur d'analyse."); 
-                                            this.loading = false;
-                                            this.showScanner = false;
-                                        }
-                                    },
-
-
-
-async submitApplication() {
-    this.loadingApp = true;
-    try {
-        await fetch(this.WEBHOOK_APP, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.appData)
-        });
-        
-        // --- SUCCÈS ---
-        alert("Dossier transmis avec succès. Le Board examinera votre candidature sous 48h.");
-        this.showAppModal = false; // Ferme la modale
-        this.appData = { name: '', email: '', position: '', challenge: '', whatsapp: '' }; // Reset
-        
-    } catch (e) { 
-        alert("Erreur de transmission. Veuillez vérifier votre connexion."); 
-    } finally { 
-        this.loadingApp = false; 
-    }
-}
-                
+        async submitApplication() {
+            this.loadingApp = true;
+            try {
+                await fetch(this.WEBHOOK_APP, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.appData)
+                });
+                alert("Dossier transmis avec succès. Le Board examinera votre candidature sous 48h.");
+                this.showAppModal = false;
+                this.appData = { name: '', email: '', position: '', challenge: '', whatsapp: '' };
+            } catch (e) {
+                alert("Erreur de transmission.");
+            } finally {
+                this.loadingApp = false;
             }
         }
+    }
+}
 
-
-
-        function counterSystem() {
+function counterSystem() {
     return {
         years: 0,
         clients: 0,
         impact: 0,
         countries: 0,
         started: false,
-        
         initObservers() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1548,29 +1485,25 @@ async submitApplication() {
             }, { threshold: 0.5 });
             observer.observe(this.$el);
         },
-
         startCounting() {
             this.animateValue('years', 0, 15, 2000);
-            this.animateValue('clients', 0, 524, 2500); // On met un chiffre précis comme 524 pour faire plus "vrai"
+            this.animateValue('clients', 0, 524, 2500);
             this.animateValue('impact', 0, 98, 2000);
             this.animateValue('countries', 0, 12, 1500);
         },
-
         animateValue(prop, start, end, duration) {
             let startTime = null;
             const step = (timestamp) => {
                 if (!startTime) startTime = timestamp;
                 const progress = Math.min((timestamp - startTime) / duration, 1);
                 this[prop] = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
     }
 }
-    </script>
+</script>
 
     <style>
         @keyframes equalizer {
@@ -1617,6 +1550,7 @@ async submitApplication() {
 
 </body>
 </html>
+
 
 
 
