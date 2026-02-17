@@ -1,13 +1,18 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalisation Inscription | VOX MASTERY</title>
+    <title>Terminal de Règlement | VOX MASTERY</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- SDK PAIEMENTS -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AYdbiOBrS1LfLCWhleavJP0U94wSEARnYj_HO-VGRCqDeMIh2HDDupr6ll4qfiZBXxxjYg8ioIkKEyqb&currency=USD"></script>
+    <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
 
     <script>
         tailwind.config = {
@@ -21,209 +26,241 @@
     </script>
     <style>
         [x-cloak] { display: none !important; }
-        .glass-panel { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-panel { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-button { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+        .step-active { color: #6366f1; border-bottom: 2px solid #6366f1; }
+        .method-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .method-card.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.05); transform: translateY(-2px); }
     </style>
 </head>
 
-<body class="bg-void text-gray-200 font-body antialiased min-h-screen flex flex-col" x-data="paymentSystem()">
+<body class="bg-void text-gray-200 font-body antialiased min-h-screen flex flex-col overflow-x-hidden" x-data="paymentSystem()">
 
-    <!-- TOP BAR SÉCURITÉ -->
-    <div class="bg-paper border-b border-white/5 py-4 px-6 flex justify-between items-center">
-        <div class="text-white font-heading text-xl tracking-widest">VOX MASTERY <span class="text-neon text-xs align-top">SECURE</span></div>
-        <div class="flex items-center gap-2 text-[10px] text-green-500 font-mono uppercase tracking-widest">
-            <i class="fa-solid fa-lock"></i> Paiement Chiffré SSL 256-bit
+    <!-- HEADER MINIMALISTE -->
+    <header class="py-6 px-8 flex justify-between items-center border-b border-white/5 bg-void/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="font-heading text-2xl tracking-[0.2em] text-white">VOX MASTERY</div>
+        <div class="hidden md:flex gap-8 text-[10px] font-mono uppercase tracking-[0.3em] text-gray-500">
+            <span :class="!success ? 'step-active' : ''" class="pb-1">01. Identification</span>
+            <span :class="success ? 'step-active' : ''" class="pb-1">02. Activation</span>
         </div>
-    </div>
+        <div class="flex items-center gap-2 text-[10px] text-neon font-mono uppercase border border-neon/30 px-3 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></span> Terminal Sécurisé
+        </div>
+    </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
-        <!-- Fond ambiance -->
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-neon/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <main class="flex-grow flex items-center justify-center p-6 relative">
+        <!-- Ambiance visuelle -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-neon/5 rounded-full blur-[150px] pointer-events-none"></div>
 
-        <div class="max-w-5xl w-full grid md:grid-cols-2 gap-8 relative z-10">
+        <div class="max-w-6xl w-full grid lg:grid-cols-12 gap-12 items-start relative z-10">
             
-            <!-- COLONNE GAUCHE : RÉCAPITULATIF COMMANDE -->
-            <div class="glass-panel p-8 md:p-10 rounded-sm flex flex-col justify-between h-full">
-                <div>
-                    <h2 class="font-heading text-3xl text-white mb-2">Récapitulatif d'Admission</h2>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">Dossier validé par le Board</p>
-
+            <!-- GAUCHE : RÉCAPITULATIF EXÉCUTIF (5 COL) -->
+            <div class="lg:col-span-5 space-y-8">
+                <div class="glass-panel p-8 rounded-xl">
+                    <h2 class="font-heading text-4xl text-white mb-8 tracking-tight">VOTRE ADMISSION</h2>
+                    
                     <div class="space-y-6">
-                        <!-- Item 1 -->
-                        <div class="flex justify-between items-start border-b border-white/5 pb-4">
-                            <div>
-                                <h3 class="text-white font-bold text-sm">Programme Exécutif Vox Mastery</h3>
-                                <p class="text-gray-500 text-xs mt-1">Cohorte 2026 • Accès complet 12 semaines</p>
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-neon/10 flex items-center justify-center text-neon">
+                                <i class="fa-solid fa-award"></i>
                             </div>
-                            <span class="text-neon font-mono text-sm">Inclus</span>
+                            <div>
+                                <h3 class="text-white font-bold text-sm">Programme Mentoring 2026</h3>
+                                <p class="text-gray-500 text-xs mt-1">Accès complet • Coaching individuel</p>
+                            </div>
                         </div>
 
-                        <!-- Item 2 -->
-                        <div class="flex justify-between items-start border-b border-white/5 pb-4">
-                            <div>
-                                <h3 class="text-white font-bold text-sm">Diagnostic VPA & Plan d'Action</h3>
-                                <p class="text-gray-500 text-xs mt-1">Analyse biométrique + Feuille de route</p>
+                        <div class="flex gap-4 border-t border-white/5 pt-6">
+                            <div class="w-10 h-10 rounded-lg bg-neon/10 flex items-center justify-center text-neon">
+                                <i class="fa-solid fa-fingerprint"></i>
                             </div>
-                            <span class="text-neon font-mono text-sm">Activé</span>
+                            <div>
+                                <h3 class="text-white font-bold text-sm">Analyse VPA & Diagnostic</h3>
+                                <p class="text-gray-500 text-xs mt-1">Données biométriques archivées</p>
+                            </div>
                         </div>
 
-                        <!-- Item 3 -->
-                        <div class="flex justify-between items-start border-b border-white/5 pb-4">
-                            <div>
-                                <h3 class="text-white font-bold text-sm">Bonus : Gestion de Crise Vocale</h3>
-                                <p class="text-gray-500 text-xs mt-1">Module spécial Média & Pression</p>
+                        <div class="bg-white/5 p-6 rounded-lg mt-8">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Total de l'investissement</span>
+                                <span class="text-neon text-[10px] font-mono">TVA Incluse</span>
                             </div>
-                            <span class="text-accent font-mono text-xs uppercase">Offert</span>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-white font-heading text-5xl">850.000</span>
+                                <span class="text-gray-400 font-heading text-2xl">FCFA</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-10">
-                    <div class="flex justify-between items-end mb-2">
-                        <span class="text-gray-400 text-sm">Investissement total</span>
-                        <span class="font-heading text-4xl text-white">850.000 <span class="text-lg text-gray-500">FCFA</span></span>
+                <!-- Garantie & Confiance -->
+                <div class="px-4 space-y-4">
+                    <div class="flex items-center gap-4 text-gray-500">
+                        <i class="fa-solid fa-shield-halved text-xl"></i>
+                        <p class="text-[11px] leading-relaxed">Paiement protégé par cryptage bancaire. Vos accès sont débloqués immédiatement après confirmation du réseau.</p>
                     </div>
-                    <p class="text-[10px] text-gray-500 italic">Facture pro éditée au nom de votre société sur demande.</p>
                 </div>
             </div>
 
-            <!-- COLONNE DROITE : FORMULAIRE PAIEMENT -->
-            <div class="bg-white p-8 md:p-10 rounded-sm text-void shadow-2xl relative">
-                
-                <!-- Timer d'urgence (Optionnel mais efficace) -->
-                <div class="absolute top-0 left-0 w-full h-1 bg-gray-100">
-                    <div class="h-full bg-neon transition-all duration-[1000ms] ease-linear" :style="`width: ${timerWidth}%`"></div>
+            <!-- DROITE : TERMINAL DE TRANSACTION (7 COL) -->
+            <div class="lg:col-span-7">
+                <div class="bg-white rounded-2xl p-8 md:p-12 text-void shadow-[0_30px_100px_rgba(0,0,0,0.4)]">
+                    <div class="text-center mb-10">
+                        <h3 class="font-heading text-3xl mb-2 uppercase tracking-tight">Mode de règlement</h3>
+                        <p class="text-gray-400 text-sm">Sélectionnez votre passerelle sécurisée</p>
+                    </div>
+
+                    <!-- GRILLE DE MÉTHODES -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                        <!-- FedaPay -->
+                        <div @click="gateway = 'fedapay'" 
+                             :class="gateway === 'fedapay' ? 'selected' : ''" 
+                             class="method-card border-2 border-gray-100 p-6 rounded-xl flex flex-col items-center text-center group">
+                            <div class="w-12 h-12 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-mobile-screen-button text-2xl text-gray-700"></i>
+                            </div>
+                            <span class="text-xs font-bold uppercase mb-1">Paiement Local</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-tighter">Wave, MTN, Orange, Moov</span>
+                        </div>
+
+                        <!-- PayPal -->
+                        <div @click="gateway = 'paypal'" 
+                             :class="gateway === 'paypal' ? 'selected' : ''" 
+                             class="method-card border-2 border-gray-100 p-6 rounded-xl flex flex-col items-center text-center group">
+                            <div class="w-12 h-12 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:scale-110 transition-transform">
+                                <i class="fa-brands fa-paypal text-2xl text-blue-700"></i>
+                            </div>
+                            <span class="text-xs font-bold uppercase mb-1">Carte / PayPal</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-tighter">Visa, Mastercard, International</span>
+                        </div>
+                    </div>
+
+                    <!-- IDENTIFICATION RAPPEL -->
+                    <div class="mb-10 flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-user-check text-neon"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase text-gray-400 font-bold">Dossier associé</p>
+                            <p class="text-sm font-bold font-mono" x-text="email"></p>
+                        </div>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="space-y-6">
+                        <!-- PayPal Container -->
+                        <div id="paypal-button-container" x-show="gateway === 'paypal'" class="animate-fadeIn"></div>
+                        
+                        <!-- FedaPay Button -->
+                        <button x-show="gateway === 'fedapay'" @click="payWithFeda()" 
+                            class="w-full bg-void text-white py-6 rounded-xl font-bold uppercase tracking-[0.2em] text-sm hover:bg-neon transition-all glow-button flex justify-center items-center gap-3">
+                            <span x-show="!loading">Lancer la transaction</span>
+                            <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Traitement...</span>
+                        </button>
+                    </div>
+
+                    <p class="text-center text-[10px] text-gray-400 mt-8 uppercase tracking-widest font-bold">
+                        <i class="fa-solid fa-shield-virus mr-2"></i> Terminal de paiement certifié PCI-DSS
+                    </p>
                 </div>
-
-                <h3 class="font-heading text-2xl mb-6 uppercase">Finalisation sécurisée</h3>
-
-                <form @submit.prevent="processPayment" class="space-y-5">
-                    
-                    <!-- Identité (Pré-remplie) -->
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-1">Email du dossier</label>
-                        <input type="email" x-model="email" readonly class="w-full bg-gray-50 border border-gray-200 p-3 text-sm text-gray-500 cursor-not-allowed">
-                    </div>
-
-                    <!-- Choix Méthode -->
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-2">Moyen de règlement</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button type="button" @click="method = 'card'" 
-                                class="border p-3 flex flex-col items-center gap-2 transition-all"
-                                :class="method === 'card' ? 'border-neon bg-neon/5 text-neon' : 'border-gray-200 text-gray-400 hover:border-gray-400'">
-                                <i class="fa-regular fa-credit-card text-lg"></i>
-                                <span class="text-[10px] font-bold uppercase">Carte Bancaire</span>
-                            </button>
-                            <button type="button" @click="method = 'mobile'" 
-                                class="border p-3 flex flex-col items-center gap-2 transition-all"
-                                :class="method === 'mobile' ? 'border-neon bg-neon/5 text-neon' : 'border-gray-200 text-gray-400 hover:border-gray-400'">
-                                <i class="fa-solid fa-mobile-screen-button text-lg"></i>
-                                <span class="text-[10px] font-bold uppercase">Mobile Money / Wave</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Zone de paiement fictive (à remplacer par intégration réelle) -->
-                    <div x-show="method === 'card'" class="space-y-3 animate-fadeIn">
-                        <input type="text" placeholder="Numéro de carte" class="w-full border border-gray-200 p-3 text-sm focus:border-neon outline-none">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="text" placeholder="MM/AA" class="w-full border border-gray-200 p-3 text-sm focus:border-neon outline-none">
-                            <input type="text" placeholder="CVC" class="w-full border border-gray-200 p-3 text-sm focus:border-neon outline-none">
-                        </div>
-                    </div>
-
-                    <div x-show="method === 'mobile'" class="space-y-3 animate-fadeIn">
-                        <div class="bg-gray-50 p-4 border border-gray-200 text-xs text-gray-600 leading-relaxed">
-                            Pour les règlements par Wave ou Orange Money, un lien de paiement sécurisé vous sera envoyé par SMS immédiatement après validation.
-                        </div>
-                        <input type="tel" placeholder="Numéro Mobile Money" class="w-full border border-gray-200 p-3 text-sm focus:border-neon outline-none">
-                    </div>
-
-                    <!-- Bouton Action -->
-                    <button type="submit" class="w-full bg-void text-white py-5 font-bold uppercase tracking-widest text-xs hover:bg-neon transition-all shadow-xl flex justify-center items-center gap-2">
-                        <span x-show="!loading">Confirmer et Démarrer (850.000 F)</span>
-                        <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Traitement bancaire...</span>
-                    </button>
-
-                    <div class="text-center">
-                        <p class="text-[9px] text-gray-400 flex justify-center gap-4">
-                            <span><i class="fa-solid fa-shield-halved"></i> Garantie Satisfait</span>
-                            <span><i class="fa-solid fa-file-invoice"></i> Facture Entreprise</span>
-                        </p>
-                    </div>
-                </form>
             </div>
         </div>
     </main>
 
-    <!-- Modal Succès -->
-    <div x-show="success" class="fixed inset-0 z-50 flex items-center justify-center bg-void/95 backdrop-blur-md" x-cloak>
-        <div class="text-center animate-fadeIn">
-            <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/50">
-                <i class="fa-solid fa-check text-3xl"></i>
+    <!-- ÉCRAN DE SUCCÈS IMMERSIF -->
+    <div x-show="success" class="fixed inset-0 z-[100] flex items-center justify-center bg-void p-6" x-cloak x-transition>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neon/20 via-void to-void"></div>
+        <div class="text-center relative z-10 animate-fadeIn">
+            <div class="w-32 h-32 bg-neon/10 text-neon rounded-full flex items-center justify-center mx-auto mb-10 border border-neon/30 relative">
+                <div class="absolute inset-0 rounded-full animate-ping bg-neon/20"></div>
+                <i class="fa-solid fa-check text-5xl"></i>
             </div>
-            <h2 class="text-white font-heading text-4xl mb-4">Bienvenue au Board.</h2>
-            <p class="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
-                Votre adhésion est confirmée. Vous allez recevoir vos accès par email d'ici 2 minutes. <br>
-                Votre mentor vous contactera via WhatsApp.
-            </p>
+            <h2 class="text-white font-heading text-6xl mb-4 uppercase tracking-tighter">Ordre Validé</h2>
+            <p class="text-gray-400 text-xl max-w-lg mx-auto mb-12 font-light">Bienvenue, {{Nom}}. Votre transformation commence maintenant. Consultez votre boîte mail pour vos accès prioritaires.</p>
+            <button @click="window.location.href='/'" class="px-12 py-5 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon hover:text-white transition-all shadow-2xl">
+                Accéder à mon Dashboard
+            </button>
         </div>
     </div>
 
     <script>
-         function paymentSystem() {
-    return {
-        email: '',
-        method: 'card',
-        loading: false,
-        success: false,
-        // REMPLACE PAR TON NOUVEAU WEBHOOK MAKE (Scénario de Vente)
-        WEBHOOK_PAYMENT: 'https://hook.eu1.make.com/q50cvrq1636zcg3xanqada7serxs6h15', 
+        function paymentSystem() {
+            return {
+                email: '',
+                Nom: 'Leader', // Sera mis à jour si besoin via URL ou Airtable
+                gateway: 'fedapay',
+                loading: false,
+                success: false,
+                amount: 850000,
+                WEBHOOK_MAKE: 'https://hook.eu1.make.com/q50cvrq1636zcg3xanqada7serxs6h15',
 
-        init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            this.email = urlParams.get('email') || '';
-            if(!this.email) {
-                console.error("Attention : aucun email détecté.");
-            }
-        },
+                init() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.email = urlParams.get('email') || '';
+                    this.setupPayPal();
+                },
 
-        async processPayment() {
-            this.loading = true;
+                payWithFeda() {
+                    this.loading = true;
+                    FedaPay.init({
+                        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
+                        transaction: {
+                            amount: this.amount,
+                            description: 'Vox Mastery Executive 2026',
+                            customer: { email: this.email }
+                        },
+                        onComplete: (res) => {
+                            if(res.status === 'approved' || res.status.name === 'approved') {
+                                this.handleFinalSuccess(res.id);
+                            } else {
+                                this.loading = false;
+                            }
+                        }
+                    }).open();
+                },
 
-            try {
-                // 1. Ici se passe l'intégration réelle (Stripe, CinetPay, Wave, etc.)
-                // On simule une réussite après 2 secondes
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                setupPayPal() {
+                    paypal.Buttons({
+                        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay', height: 55 },
+                        createOrder: (data, actions) => {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    description: "Vox Mastery 2026 Executive",
+                                    amount: { currency_code: 'USD', value: '1415.00' }
+                                }]
+                            });
+                        },
+                        onApprove: (data, actions) => {
+                            return actions.order.capture().then((details) => {
+                                this.handleFinalSuccess(details.id);
+                            });
+                        }
+                    }).render('#paypal-button-container');
+                },
 
-                // 2. APPEL DU WEBHOOK DE VALIDATION
-                const res = await fetch(this.WEBHOOK_PAYMENT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: this.email,
-                        status: 'SUCCESS',
-                        amount: 850000,
-                        currency: 'FCFA',
-                        date_paiement: new Date().toISOString()
-                    })
-                });
-
-                if (res.ok) {
-                    this.loading = false;
-                    this.success = true;
-                } else {
-                    throw new Error("Erreur Webhook");
+                async handleFinalSuccess(trxId) {
+                    this.loading = true;
+                    try {
+                        await fetch(this.WEBHOOK_MAKE, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: this.email,
+                                transactionId: trxId,
+                                gateway: this.gateway,
+                                status: 'PAID',
+                                date: new Date().toISOString()
+                            })
+                        });
+                        this.success = true;
+                    } catch (e) {
+                        alert("Paiement validé, mais erreur de lien CRM. Contactez-nous avec l'ID : " + trxId);
+                    } finally {
+                        this.loading = false;
+                    }
                 }
-
-            } catch (e) {
-                this.loading = false;
-                alert("Le paiement a été débité mais la validation a échoué. Contactez le support Vox Mastery immédiatement.");
             }
         }
-    }
-}
     </script>
 </body>
 </html>
