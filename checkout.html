@@ -163,10 +163,21 @@
                 success: false,
                 amount: 850000,
                 WEBHOOK_MAKE: 'https://hook.eu1.make.com/q50cvrq1636zcg3xanqada7serxs6h15',
-
+                
                 init() {
+                    // 1. On récupère l'email dans l'adresse de la page
                     const urlParams = new URLSearchParams(window.location.search);
-                    this.email = urlParams.get('email') || 'contact@client.com';
+                    const emailParam = urlParams.get('email');
+                
+                    if (emailParam) {
+                        this.email = emailParam;
+                    } else {
+                        // 2. SÉCURITÉ : Si pas de mail, on bloque ou on avertit
+                        alert("Erreur d'identification. Veuillez utiliser le lien reçu par e-mail pour finaliser votre inscription.");
+                        // Optionnel : redirection vers l'accueil
+                        // window.location.href = 'index.html'; 
+                    }
+                    
                     this.setupPayPal();
                 },
 
