@@ -172,38 +172,58 @@
     </div>
 
     <script>
-        function paymentSystem() {
-            return {
-                email: '',
-                method: 'card',
-                loading: false,
-                success: false,
-                timerWidth: 100,
+         function paymentSystem() {
+    return {
+        email: '',
+        method: 'card',
+        loading: false,
+        success: false,
+        // REMPLACE PAR TON NOUVEAU WEBHOOK MAKE (Scénario de Vente)
+        WEBHOOK_PAYMENT: 'https://hook.eu1.make.com/q50cvrq1636zcg3xanqada7serxs6h15', 
 
-                init() {
-                    // Récupère l'email de l'URL pour pré-remplir
-                    const urlParams = new URLSearchParams(window.location.search);
-                    this.email = urlParams.get('email') || 'Votre email';
-                    
-                    // Animation Timer (Barre du haut)
-                    setTimeout(() => { this.timerWidth = 0; }, 100);
-                },
+        init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            this.email = urlParams.get('email') || '';
+            if(!this.email) {
+                console.error("Attention : aucun email détecté.");
+            }
+        },
 
-                processPayment() {
-                    this.loading = true;
-                    
-                    // SIMULATION PAIEMENT (Ici tu mettras ton appel API Stripe/Wave)
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.success = true;
-                        
-                        // Optionnel : Envoyer un webhook à Make pour dire "A PAYÉ"
-                        // fetch('TON_WEBHOOK_PAIEMENT', { ... })
-                        
-                    }, 2000);
+        async processPayment() {
+            this.loading = true;
+
+            try {
+                // 1. Ici se passe l'intégration réelle (Stripe, CinetPay, Wave, etc.)
+                // On simule une réussite après 2 secondes
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // 2. APPEL DU WEBHOOK DE VALIDATION
+                const res = await fetch(this.WEBHOOK_PAYMENT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: this.email,
+                        status: 'SUCCESS',
+                        amount: 850000,
+                        currency: 'FCFA',
+                        date_paiement: new Date().toISOString()
+                    })
+                });
+
+                if (res.ok) {
+                    this.loading = false;
+                    this.success = true;
+                } else {
+                    throw new Error("Erreur Webhook");
                 }
+
+            } catch (e) {
+                this.loading = false;
+                alert("Le paiement a été débité mais la validation a échoué. Contactez le support Vox Mastery immédiatement.");
             }
         }
+    }
+}
     </script>
 </body>
 </html>
