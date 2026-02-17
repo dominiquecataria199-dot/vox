@@ -1284,10 +1284,9 @@
                 get timerStr() { return `00:${this.seconds.toString().padStart(2, '0')}`; },
                 scrollTo(id) { document.getElementById(id).scrollIntoView({behavior: 'smooth'}); },
                 mode: 'full',
-                // À mettre à l'intérieur du "return { ... }"
                 leadEmail: '',
                 loadingLead: false,
-                WEBHOOK_LEAD: 'https://hook.eu1.make.com/TON_LIEN_WEBHOOK', // Remplace par ton lien Make
+                WEBHOOK_LEAD: 'https://hook.eu1.make.com/bmwnd6nidksg9kj6jhoxr6z5da4m3lis', 
                 
                 async submitLead() {
                     if (!this.leadEmail) return;
@@ -1618,6 +1617,7 @@ async submitApplication() {
 
 </body>
 </html>
+
 
 
 
