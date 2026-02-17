@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Terminal de Règlement | VOX MASTERY</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,160 +26,131 @@
     </script>
     <style>
         [x-cloak] { display: none !important; }
-        .glass-panel { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glow-button { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
-        .step-active { color: #6366f1; border-bottom: 2px solid #6366f1; }
-        .method-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .method-card.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.05); transform: translateY(-2px); }
+        .method-card { transition: all 0.3s ease; border: 1px solid #f3f4f6; }
+        .method-card.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.05); }
+        html, body { height: 100%; overflow-x: hidden; }
     </style>
 </head>
 
-<body class="bg-void text-gray-200 font-body antialiased min-h-screen flex flex-col overflow-x-hidden" x-data="paymentSystem()">
+<body class="bg-void text-gray-200 font-body antialiased min-h-screen flex flex-col" x-data="paymentSystem()">
 
-    <!-- HEADER MINIMALISTE -->
-    <header class="py-6 px-8 flex justify-between items-center border-b border-white/5 bg-void/50 backdrop-blur-md sticky top-0 z-50">
+    <!-- HEADER -->
+    <header class="py-6 px-8 flex justify-between items-center bg-void">
         <div class="font-heading text-2xl tracking-[0.2em] text-white">VOX MASTERY</div>
-        <div class="hidden md:flex gap-8 text-[10px] font-mono uppercase tracking-[0.3em] text-gray-500">
-            <span :class="!success ? 'step-active' : ''" class="pb-1">01. Identification</span>
-            <span :class="success ? 'step-active' : ''" class="pb-1">02. Activation</span>
-        </div>
         <div class="flex items-center gap-2 text-[10px] text-neon font-mono uppercase border border-neon/30 px-3 py-1 rounded-full">
             <span class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></span> Terminal Sécurisé
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-6 relative">
-        <!-- Ambiance visuelle -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-neon/5 rounded-full blur-[150px] pointer-events-none"></div>
-
-        <div class="max-w-6xl w-full grid lg:grid-cols-12 gap-12 items-start relative z-10">
+    <!-- MAIN CONTAINER CENTRÉ -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
+        
+        <!-- BLOC UNIQUE FUSIONNÉ -->
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-2xl shadow-[0_30px_100px_rgba(0,0,0,0.5)] border border-white/5">
             
-            <!-- GAUCHE : RÉCAPITULATIF EXÉCUTIF (5 COL) -->
-            <div class="lg:col-span-5 space-y-8">
-                <div class="glass-panel p-8 rounded-xl">
-                    <h2 class="font-heading text-4xl text-white mb-8 tracking-tight">VOTRE ADMISSION</h2>
-                    
-                    <div class="space-y-6">
-                        <div class="flex gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-neon/10 flex items-center justify-center text-neon">
-                                <i class="fa-solid fa-award"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-white font-bold text-sm">Programme Mentoring 2026</h3>
-                                <p class="text-gray-500 text-xs mt-1">Accès complet • Coaching individuel</p>
-                            </div>
+            <!-- GAUCHE : RÉCAPITULATIF (FOND NOIR) -->
+            <div class="lg:col-span-5 bg-paper p-8 md:p-12 flex flex-col justify-center border-r border-white/5">
+                <div class="inline-block px-3 py-1 rounded-full bg-neon/10 border border-neon/20 text-neon text-[10px] font-mono uppercase tracking-widest mb-6">Récapitulatif</div>
+                
+                <h2 class="font-heading text-4xl text-white mb-8 tracking-tight uppercase">Votre Admission</h2>
+                
+                <div class="space-y-8">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-neon">
+                            <i class="fa-solid fa-award"></i>
                         </div>
-
-                        <div class="flex gap-4 border-t border-white/5 pt-6">
-                            <div class="w-10 h-10 rounded-lg bg-neon/10 flex items-center justify-center text-neon">
-                                <i class="fa-solid fa-fingerprint"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-white font-bold text-sm">Analyse VPA & Diagnostic</h3>
-                                <p class="text-gray-500 text-xs mt-1">Données biométriques archivées</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white/5 p-6 rounded-lg mt-8">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Total de l'investissement</span>
-                                <span class="text-neon text-[10px] font-mono">TVA Incluse</span>
-                            </div>
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-white font-heading text-5xl">850.000</span>
-                                <span class="text-gray-400 font-heading text-2xl">FCFA</span>
-                            </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">Programme Mentoring 2026</h3>
+                            <p class="text-gray-500 text-xs mt-1">Accès complet 12 semaines • Coaching Individuel</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Garantie & Confiance -->
-                <div class="px-4 space-y-4">
-                    <div class="flex items-center gap-4 text-gray-500">
-                        <i class="fa-solid fa-shield-halved text-xl"></i>
-                        <p class="text-[11px] leading-relaxed">Paiement protégé par cryptage bancaire. Vos accès sont débloqués immédiatement après confirmation du réseau.</p>
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-neon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">Analyse VPA & Diagnostic</h3>
+                            <p class="text-gray-500 text-xs mt-1">Données biométriques traitées</p>
+                        </div>
+                    </div>
+
+                    <!-- BLOC PRIX DANS LA CARTE -->
+                    <div class="bg-void/50 p-6 rounded-xl border border-white/5 mt-10">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Investissement Total</span>
+                            <span class="text-green-500 text-[10px] font-mono uppercase">Sécurisé</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-white font-heading text-5xl">850.000</span>
+                            <span class="text-gray-400 font-heading text-2xl">FCFA</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- DROITE : TERMINAL DE TRANSACTION (7 COL) -->
-            <div class="lg:col-span-7">
-                <div class="bg-white rounded-2xl p-8 md:p-12 text-void shadow-[0_30px_100px_rgba(0,0,0,0.4)]">
+            <!-- DROITE : TERMINAL (FOND BLANC) -->
+            <div class="lg:col-span-7 bg-white p-8 md:p-12 flex flex-col justify-center">
+                <div class="max-w-md mx-auto w-full text-void">
                     <div class="text-center mb-10">
-                        <h3 class="font-heading text-3xl mb-2 uppercase tracking-tight">Mode de règlement</h3>
-                        <p class="text-gray-400 text-sm">Sélectionnez votre passerelle sécurisée</p>
+                        <h3 class="font-heading text-3xl mb-2 uppercase tracking-tight">Règlement sécurisé</h3>
+                        <p class="text-gray-400 text-sm">Sélectionnez votre mode de paiement</p>
                     </div>
 
-                    <!-- GRILLE DE MÉTHODES -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                        <!-- FedaPay -->
+                    <!-- MÉTHODES -->
+                    <div class="grid grid-cols-2 gap-4 mb-8">
                         <div @click="gateway = 'fedapay'" 
                              :class="gateway === 'fedapay' ? 'selected' : ''" 
-                             class="method-card border-2 border-gray-100 p-6 rounded-xl flex flex-col items-center text-center group">
-                            <div class="w-12 h-12 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-mobile-screen-button text-2xl text-gray-700"></i>
-                            </div>
-                            <span class="text-xs font-bold uppercase mb-1">Paiement Local</span>
-                            <span class="text-[10px] text-gray-400 uppercase tracking-tighter">Wave, MTN, Orange, Moov</span>
+                             class="method-card p-6 rounded-xl flex flex-col items-center text-center cursor-pointer group">
+                            <i class="fa-solid fa-mobile-screen-button text-2xl text-gray-700 mb-3"></i>
+                            <span class="text-[10px] font-bold uppercase">Local</span>
+                            <span class="text-[8px] text-gray-400 uppercase">Africa / Momo</span>
                         </div>
 
-                        <!-- PayPal -->
                         <div @click="gateway = 'paypal'" 
                              :class="gateway === 'paypal' ? 'selected' : ''" 
-                             class="method-card border-2 border-gray-100 p-6 rounded-xl flex flex-col items-center text-center group">
-                            <div class="w-12 h-12 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:scale-110 transition-transform">
-                                <i class="fa-brands fa-paypal text-2xl text-blue-700"></i>
-                            </div>
-                            <span class="text-xs font-bold uppercase mb-1">Carte / PayPal</span>
-                            <span class="text-[10px] text-gray-400 uppercase tracking-tighter">Visa, Mastercard, International</span>
+                             class="method-card p-6 rounded-xl flex flex-col items-center text-center cursor-pointer group">
+                            <i class="fa-brands fa-paypal text-2xl text-blue-700 mb-3"></i>
+                            <span class="text-[10px] font-bold uppercase">International</span>
+                            <span class="text-[8px] text-gray-400 uppercase">PayPal / Card</span>
                         </div>
                     </div>
 
-                    <!-- IDENTIFICATION RAPPEL -->
-                    <div class="mb-10 flex items-center gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-                            <i class="fa-solid fa-user-check text-neon"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold">Dossier associé</p>
-                            <p class="text-sm font-bold font-mono" x-text="email"></p>
+                    <!-- INFO DOSSIER -->
+                    <div class="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-4">
+                        <i class="fa-solid fa-user-shield text-neon"></i>
+                        <div class="overflow-hidden">
+                            <p class="text-[8px] uppercase text-gray-400 font-bold">Dossier Client</p>
+                            <p class="text-sm font-bold font-mono truncate" x-text="email"></p>
                         </div>
                     </div>
 
                     <!-- ACTIONS -->
-                    <div class="space-y-6">
-                        <!-- PayPal Container -->
-                        <div id="paypal-button-container" x-show="gateway === 'paypal'" class="animate-fadeIn"></div>
-                        
-                        <!-- FedaPay Button -->
-                        <button x-show="gateway === 'fedapay'" @click="payWithFeda()" 
-                            class="w-full bg-void text-white py-6 rounded-xl font-bold uppercase tracking-[0.2em] text-sm hover:bg-neon transition-all glow-button flex justify-center items-center gap-3">
-                            <span x-show="!loading">Lancer la transaction</span>
-                            <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Traitement...</span>
-                        </button>
-                    </div>
+                    <div id="paypal-button-container" x-show="gateway === 'paypal'" class="animate-fadeIn mb-4"></div>
+                    
+                    <button x-show="gateway === 'fedapay'" @click="payWithFeda()" 
+                        class="w-full bg-void text-white py-5 rounded-xl font-bold uppercase tracking-[0.2em] text-sm hover:bg-neon transition-all shadow-xl flex justify-center items-center gap-3">
+                        <span x-show="!loading">Valider l'adhésion</span>
+                        <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Traitement...</span>
+                    </button>
 
-                    <p class="text-center text-[10px] text-gray-400 mt-8 uppercase tracking-widest font-bold">
-                        <i class="fa-solid fa-shield-virus mr-2"></i> Terminal de paiement certifié PCI-DSS
+                    <p class="text-center text-[9px] text-gray-400 mt-8 uppercase tracking-[0.3em] font-bold">
+                        <i class="fa-solid fa-lock text-green-500 mr-2"></i> Certifié PCI-DSS 
                     </p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- ÉCRAN DE SUCCÈS IMMERSIF -->
+    <!-- SUCCESS MODAL -->
     <div x-show="success" class="fixed inset-0 z-[100] flex items-center justify-center bg-void p-6" x-cloak x-transition>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neon/20 via-void to-void"></div>
-        <div class="text-center relative z-10 animate-fadeIn">
-            <div class="w-32 h-32 bg-neon/10 text-neon rounded-full flex items-center justify-center mx-auto mb-10 border border-neon/30 relative">
-                <div class="absolute inset-0 rounded-full animate-ping bg-neon/20"></div>
-                <i class="fa-solid fa-check text-5xl"></i>
+        <div class="text-center animate-fadeIn">
+            <div class="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                <i class="fa-solid fa-check text-4xl"></i>
             </div>
-            <h2 class="text-white font-heading text-6xl mb-4 uppercase tracking-tighter">Ordre Validé</h2>
-            <p class="text-gray-400 text-xl max-w-lg mx-auto mb-12 font-light">Bienvenue, {{Nom}}. Votre transformation commence maintenant. Consultez votre boîte mail pour vos accès prioritaires.</p>
-            <button @click="window.location.href='/'" class="px-12 py-5 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon hover:text-white transition-all shadow-2xl">
-                Accéder à mon Dashboard
-            </button>
+            <h2 class="text-white font-heading text-6xl mb-4 uppercase tracking-tighter">Bienvenue</h2>
+            <p class="text-gray-400 text-xl max-w-md mx-auto mb-10 font-light">Votre accès au Board Vox Mastery a été activé. Consultez vos emails.</p>
+            <button @click="window.location.href='/'" class="px-12 py-4 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon transition-all">Accéder à mon espace</button>
         </div>
     </div>
 
@@ -187,7 +158,6 @@
         function paymentSystem() {
             return {
                 email: '',
-                Nom: 'Leader', // Sera mis à jour si besoin via URL ou Airtable
                 gateway: 'fedapay',
                 loading: false,
                 success: false,
@@ -196,7 +166,7 @@
 
                 init() {
                     const urlParams = new URLSearchParams(window.location.search);
-                    this.email = urlParams.get('email') || '';
+                    this.email = urlParams.get('email') || 'contact@client.com';
                     this.setupPayPal();
                 },
 
@@ -220,12 +190,12 @@
                 },
 
                 setupPayPal() {
+                    if(!window.paypal) return;
                     paypal.Buttons({
-                        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay', height: 55 },
+                        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
                         createOrder: (data, actions) => {
                             return actions.order.create({
                                 purchase_units: [{
-                                    description: "Vox Mastery 2026 Executive",
                                     amount: { currency_code: 'USD', value: '1415.00' }
                                 }]
                             });
@@ -248,13 +218,12 @@
                                 email: this.email,
                                 transactionId: trxId,
                                 gateway: this.gateway,
-                                status: 'PAID',
-                                date: new Date().toISOString()
+                                status: 'PAID'
                             })
                         });
                         this.success = true;
                     } catch (e) {
-                        alert("Paiement validé, mais erreur de lien CRM. Contactez-nous avec l'ID : " + trxId);
+                        alert("Erreur de synchronisation CRM. Notez l'ID : " + trxId);
                     } finally {
                         this.loading = false;
                     }
