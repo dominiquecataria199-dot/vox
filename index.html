@@ -1079,86 +1079,86 @@
 
 
     
-    <!-- MODALE CANDIDATURE -->
- <!-- MODALE CANDIDATURE (VERSION EXECUTIVE) -->
+
+                    <!-- MODALE CANDIDATURE (VERSION CORRIGÉE - BORDURES VISIBLES) -->
 <div x-show="showAppModal" 
      x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 scale-95"
-     x-transition:enter-end="opacity-100 scale-100"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
      x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 scale-100"
-     x-transition:leave-end="opacity-0 scale-95"
-     class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-void/95 backdrop-blur-md" 
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-void/95 backdrop-blur-md overflow-y-auto" 
      x-cloak>
     
-    <!-- Conteneur de la modale -->
-    <div class="relative w-full max-w-2xl bg-paper border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden rounded-sm" @click.away="showAppModal = false">
+    <!-- Conteneur de la modale avec marges et bordures nettes -->
+    <div class="relative w-full max-w-2xl bg-paper border border-white/10 shadow-[0_0_50px_rgba(0,0,0,1)] my-auto" 
+         @click.away="showAppModal = false">
         
-        <!-- Bordure décorative haute -->
+        <!-- Ligne de design haute -->
         <div class="h-1 w-full bg-gradient-to-r from-neon via-accent to-neon"></div>
 
-        <!-- Bouton Fermer (Symbole) -->
-        <button @click="showAppModal = false" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-20">
+        <!-- Bouton Fermer -->
+        <button @click="showAppModal = false" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-50">
             <i class="fa-solid fa-xmark text-2xl"></i>
         </button>
 
-        <div class="p-8 md:p-12">
+        <div class="p-6 md:p-12">
             <!-- En-tête -->
             <div class="text-center mb-10">
                 <div class="inline-block px-3 py-1 border border-neon/30 text-neon text-[9px] font-mono tracking-[0.4em] uppercase mb-4">
                     Candidature Restreinte
                 </div>
-                <h3 class="font-heading text-4xl text-white uppercase tracking-tight">Dossier de Sélection</h3>
-                <p class="text-gray-500 text-xs font-light mt-2 uppercase tracking-widest">Session Exécutive 2026</p>
+                <h3 class="font-heading text-3xl md:text-4xl text-white uppercase tracking-tight">Dossier de Sélection</h3>
+                <p class="text-gray-500 text-[10px] font-light mt-2 uppercase tracking-[0.2em]">Session Exécutive 2026</p>
             </div>
 
             <form @submit.prevent="submitApplication" class="space-y-6">
                 <!-- Groupe 1 : Identité -->
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-400 font-mono">Identité complète</label>
                         <input type="text" x-model="appData.name" placeholder="Ex: Jean Dupont" required 
-                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon focus:ring-1 focus:ring-neon outline-none text-sm transition-all">
+                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon outline-none text-sm transition-all rounded-sm">
                     </div>
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-400 font-mono">Contact Professionnel</label>
                         <input type="email" x-model="appData.email" placeholder="email@compagnie.com" required 
-                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon focus:ring-1 focus:ring-neon outline-none text-sm transition-all">
+                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon outline-none text-sm transition-all rounded-sm">
                     </div>
                 </div>
 
                 <!-- Groupe 2 : Statut & Mobile -->
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-400 font-mono">Fonction Actuelle</label>
                         <input type="text" x-model="appData.position" placeholder="Ex: Directeur Financier" required 
-                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon focus:ring-1 focus:ring-neon outline-none text-sm transition-all">
+                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon outline-none text-sm transition-all rounded-sm">
                     </div>
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-400 font-mono">Ligne Directe (WhatsApp)</label>
                         <input type="tel" x-model="appData.whatsapp" placeholder="+225 ..." required 
-                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon focus:ring-1 focus:ring-neon outline-none text-sm transition-all">
+                               class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon outline-none text-sm transition-all rounded-sm">
                     </div>
                 </div>
 
                 <!-- Groupe 3 : Défi -->
-                <div class="space-y-1">
+                <div class="space-y-2">
                     <label class="text-[10px] uppercase tracking-widest text-gray-400 font-mono">Analyse de besoin</label>
                     <textarea x-model="appData.challenge" rows="3" placeholder="Quel est votre principal défi oratoire actuel ?" required 
-                              class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon focus:ring-1 focus:ring-neon outline-none text-sm transition-all resize-none"></textarea>
+                              class="w-full bg-void border border-white/10 p-4 text-white focus:border-neon outline-none text-sm transition-all resize-none rounded-sm"></textarea>
                 </div>
                 
                 <!-- Bouton Action -->
                 <div class="pt-4">
                     <button type="submit" 
-                            class="group relative w-full bg-neon text-white font-bold py-5 uppercase tracking-[0.25em] text-xs transition-all overflow-hidden">
+                            class="group relative w-full bg-neon text-white font-bold py-5 uppercase tracking-[0.25em] text-xs transition-all overflow-hidden rounded-sm">
                         <span class="relative z-10" x-show="!loadingApp">Transmettre mon dossier au Board</span>
-                        <span class="relative z-10 flex items-center justify-center gap-3" x-show="loadingApp">
+                        <span class="relative z-10 flex items-center justify-center gap-3" x-show="loadingApp" x-cloak>
                             <i class="fa-solid fa-circle-notch fa-spin"></i> Traitement confidentiel...
                         </span>
-                        <!-- Effet de survol -->
                         <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                        <style> .group:hover span { color: #0A0A0A; } </style>
+                        <style> .group:hover span { color: #0A0A0A !important; } </style>
                     </button>
                 </div>
 
@@ -1169,7 +1169,6 @@
         </div>
     </div>
 </div>
-
                     
                     
             <!-- FOOTER EXÉCUTIF RESPONSIVE -->
@@ -1584,6 +1583,7 @@ function counterSystem() {
 
 </body>
 </html>
+
 
 
 
