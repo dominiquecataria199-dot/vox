@@ -182,28 +182,29 @@
     const fname = nameParts.shift() || "Client";
     const lname = nameParts.join(' ') || " ";
     
-    // 2. Nettoyage complet du téléphone (chiffres uniquement)
-    let fullPhone = this.phone.replace(/[^0-9]/g, ''); 
+    // 2. Nettoyage : On garde uniquement les chiffres et on force le "+"
+    let cleanPhone = this.phone.replace(/[^0-9]/g, ''); // Enlève tout sauf les chiffres
+    if (cleanPhone && !cleanPhone.startsWith('+')) {
+        cleanPhone = '+' + cleanPhone; // Force le format international +229...
+    }
 
-    // 3. Dictionnaire des indicatifs mondiaux (les plus fréquents pour votre business)
-    // Vous pouvez en ajouter d'autres si nécessaire
+    // 3. Détection du pays (en MINUSCULES pour FedaPay)
+    let countryCode = 'bj'; // Défaut
+    const phoneDigits = cleanPhone.replace('+', '');
+
     const countryPrefixes = {
-        "229": "BJ", "225": "CI", "228": "TG", "221": "SN", "226": "BF", "223": "ML", 
-        "237": "CM", "241": "GA", "242": "CG", "243": "CD", "234": "NG", "250": "RW",
-        "33": "FR", "32": "BE", "41": "CH", "1": "US", "44": "GB", "212": "MA", "213": "DZ", "216": "TN"
+        "229": "bj", "225": "ci", "228": "tg", "221": "sn", "226": "bf", "223": "ml", 
+        "237": "cm", "241": "ga", "242": "cg", "243": "cd", "234": "ng", "250": "rw",
+        "33": "fr", "32": "be", "41": "ch", "1": "us", "44": "gb", "212": "ma"
     };
 
-    let countryCode = 'BJ'; // Pays par défaut si non trouvé
-    let localNumber = fullPhone;
-
-    // On trie les indicatifs par longueur décroissante (ex: check 229 avant 2)
     const sortedPrefixes = Object.keys(countryPrefixes).sort((a, b) => b.length - a.length);
 
     for (let prefix of sortedPrefixes) {
-        if (fullPhone.startsWith(prefix)) {
+        if (phoneDigits.startsWith(prefix)) {
             countryCode = countryPrefixes[prefix];
-            localNumber = fullPhone.substring(prefix.length);
-            break;
+            // On a trouvé le pays, mais ON GARDE LE NUMÉRO COMPLET dans cleanPhone
+            break; 
         }
     }
 
@@ -218,8 +219,8 @@
                     lastname: lname,
                     email: this.email.trim(),
                     phone_number: {
-                        number: localNumber,
-                        country: countryCode 
+                        number: cleanPhone,   // Envoi avec le + (ex: +2290196475885)
+                        country: countryCode  // Envoi en minuscules (ex: bj)
                     }
                 }
             },
@@ -239,8 +240,6 @@
         console.error("Erreur FedaPay:", error);
     }
 },
-
-
                 
 
                 
