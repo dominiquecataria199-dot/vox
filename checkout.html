@@ -174,39 +174,45 @@
 
 
 
-                payWithFeda() {
+              payWithFeda() {
     this.loading = true;
 
-    // 1. Préparation du Nom/Prénom
+    // 1. Préparation du Nom/Prénom (ça marche parfaitement maintenant)
     const nameParts = this.name.trim().split(/\s+/);
     const fname = nameParts.shift() || "Client";
     const lname = nameParts.join(' ') || " ";
     
-    // 2. Nettoyage : On garde uniquement les chiffres et on force le "+"
-    let cleanPhone = this.phone.replace(/[^0-9]/g, ''); // Enlève tout sauf les chiffres
-    if (cleanPhone && !cleanPhone.startsWith('+')) {
-        cleanPhone = '+' + cleanPhone; // Force le format international +229...
-    }
+    // 2. Nettoyage : On ne garde que les chiffres
+    let digits = this.phone.replace(/[^0-9]/g, ''); 
+    
+    // 3. Détection du pays et EXTRACTION du numéro local (C'EST LA CLÉ)
+    let countryCode = 'bj'; // Bénin par défaut
+    let localNum = digits;  // Par défaut, on prend tout
 
-    // 3. Détection du pays (en MINUSCULES pour FedaPay)
-    let countryCode = 'bj'; // Défaut
-    const phoneDigits = cleanPhone.replace('+', '');
-
-    const countryPrefixes = {
-        "229": "bj", "225": "ci", "228": "tg", "221": "sn", "226": "bf", "223": "ml", 
-        "237": "cm", "241": "ga", "242": "cg", "243": "cd", "234": "ng", "250": "rw",
-        "33": "fr", "32": "be", "41": "ch", "1": "us", "44": "gb", "212": "ma"
+    // Dictionnaire des indicatifs (en minuscules pour FedaPay)
+    const prefixes = {
+        "229": "bj", "225": "ci", "228": "tg", "221": "sn", 
+        "226": "bf", "223": "ml", "237": "cm", "241": "ga", 
+        "242": "cg", "243": "cd", "234": "ng", "33": "fr", 
+        "1": "us", "44": "gb"
     };
 
-    const sortedPrefixes = Object.keys(countryPrefixes).sort((a, b) => b.length - a.length);
+    // On trie pour vérifier les plus longs en premier
+    const sortedPrefixes = Object.keys(prefixes).sort((a, b) => b.length - a.length);
 
     for (let prefix of sortedPrefixes) {
-        if (phoneDigits.startsWith(prefix)) {
-            countryCode = countryPrefixes[prefix];
-            // On a trouvé le pays, mais ON GARDE LE NUMÉRO COMPLET dans cleanPhone
-            break; 
+        if (digits.startsWith(prefix)) {
+            countryCode = prefixes[prefix];
+            // MAGIE : On COUPE l'indicatif pour ne garder que le numéro local
+            localNum = digits.substring(prefix.length); 
+            break;
         }
     }
+
+    // Exemple de ce qui se passe : 
+    // digits = "2290196475885"
+    // prefix trouvé = "229" -> countryCode = "bj"
+    // localNum = "0196475885" (10 chiffres, valide pour le Bénin !)
 
     try {
         FedaPay.init({
@@ -219,8 +225,8 @@
                     lastname: lname,
                     email: this.email.trim(),
                     phone_number: {
-                        number: cleanPhone,   // Envoi avec le + (ex: +2290196475885)
-                        country: countryCode  // Envoi en minuscules (ex: bj)
+                        number: localNum,    // Le numéro coupé (0196475885)
+                        country: countryCode // Le code pays (bj)
                     }
                 }
             },
