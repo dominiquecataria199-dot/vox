@@ -172,21 +172,40 @@
 
 
 
-               payWithFeda() {
+
+
+                payWithFeda() {
     this.loading = true;
 
-    // 1. Nettoyage et préparation des données
-    const cleanName = this.name.trim() || "Client";
-    const nameParts = cleanName.split(/\s+/);
-    const fname = nameParts.shift(); // Premier mot
-    const lname = nameParts.join(' ') || " "; // Le reste ou un espace (requis)
+    // 1. Préparation du Nom/Prénom
+    const nameParts = this.name.trim().split(/\s+/);
+    const fname = nameParts.shift() || "Client";
+    const lname = nameParts.join(' ') || " ";
     
-    const cleanEmail = this.email.trim();
-    // On retire tout sauf les chiffres pour le téléphone
-    const cleanPhone = this.phone.replace(/[^0-9]/g, '');
+    // 2. Nettoyage complet du téléphone (chiffres uniquement)
+    let fullPhone = this.phone.replace(/[^0-9]/g, ''); 
 
-    // Debug pour toi : vérifie dans la console (F12) ce qui est envoyé
-    console.log("Data envoyée à FedaPay:", { fname, lname, cleanEmail, cleanPhone });
+    // 3. Dictionnaire des indicatifs mondiaux (les plus fréquents pour votre business)
+    // Vous pouvez en ajouter d'autres si nécessaire
+    const countryPrefixes = {
+        "229": "BJ", "225": "CI", "228": "TG", "221": "SN", "226": "BF", "223": "ML", 
+        "237": "CM", "241": "GA", "242": "CG", "243": "CD", "234": "NG", "250": "RW",
+        "33": "FR", "32": "BE", "41": "CH", "1": "US", "44": "GB", "212": "MA", "213": "DZ", "216": "TN"
+    };
+
+    let countryCode = 'BJ'; // Pays par défaut si non trouvé
+    let localNumber = fullPhone;
+
+    // On trie les indicatifs par longueur décroissante (ex: check 229 avant 2)
+    const sortedPrefixes = Object.keys(countryPrefixes).sort((a, b) => b.length - a.length);
+
+    for (let prefix of sortedPrefixes) {
+        if (fullPhone.startsWith(prefix)) {
+            countryCode = countryPrefixes[prefix];
+            localNumber = fullPhone.substring(prefix.length);
+            break;
+        }
+    }
 
     try {
         FedaPay.init({
@@ -195,23 +214,18 @@
                 amount: this.amount,
                 description: 'Vox Mastery Executive 2026',
                 customer: { 
-                    // On double les clés pour être sûr de couvrir toutes les versions du SDK
                     firstname: fname,
-                    first_name: fname, 
                     lastname: lname,
-                    last_name: lname,
-                    email: cleanEmail,
+                    email: this.email.trim(),
                     phone_number: {
-                        number: cleanPhone,
-                        country: 'BJ' // Code ISO du Bénin
+                        number: localNumber,
+                        country: countryCode 
                     }
                 }
             },
             onComplete: (res) => {
-                let statusStr = "";
-                if (res && res.status) {
-                    statusStr = (typeof res.status === 'object') ? res.status.name : res.status;
-                }
+                let statusStr = (res && res.status) ? 
+                    ((typeof res.status === 'object') ? res.status.name : res.status) : "";
 
                 if (statusStr === 'approved') {
                     this.handleFinalSuccess(res.id);
@@ -222,9 +236,12 @@
         }).open();
     } catch (error) {
         this.loading = false;
-        console.error("Erreur d'initialisation FedaPay:", error);
+        console.error("Erreur FedaPay:", error);
     }
 },
+
+
+                
 
                 
                 setupPayPal() {
