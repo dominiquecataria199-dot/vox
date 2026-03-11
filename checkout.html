@@ -168,40 +168,58 @@
                     this.setupPayPal();
                 },
 
-payWithFeda() {
+
+
+
+
+                payWithFeda() {
     this.loading = true;
 
-    // On sépare le nom complet pour remplir "Nom" et "Prénom" chez FedaPay
-    const nameParts = this.name.trim().split(' ');
-    const firstname = nameParts[0] || ''; // Premier mot -> Prénom
-    const lastname = nameParts.slice(1).join(' ') || ' '; // Le reste -> Nom (espace si vide car requis)
+    // Découpage propre du nom pour FedaPay
+    const nameParts = this.name.trim().split(/\s+/);
+    const fname = nameParts[0] || 'Client';
+    const lname = nameParts.slice(1).join(' ') || ' '; // Espace requis par Feda si vide
 
-    FedaPay.init({
-        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
-        transaction: {
-            amount: this.amount,
-            description: 'Vox Mastery Executive 2026',
-            customer: { 
-                firstname: firstname, 
-                lastname: lastname,
-                email: this.email.trim(),
-                phone_number: {
-                    number: this.phone.replace(/\s/g, ''), // Supprime les espaces
-                    country: 'bj' // Code pays par défaut (Bénin)
+    try {
+        FedaPay.init({
+            public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
+            transaction: {
+                amount: this.amount,
+                description: 'Vox Mastery Executive 2026',
+                customer: { 
+                    firstname: fname, 
+                    lastname: lname,
+                    email: this.email.trim(),
+                    phone_number: {
+                        number: this.phone.replace(/[^0-9]/g, ''), // On ne garde que les chiffres
+                        country: 'bj'
+                    }
+                }
+            },
+            onComplete: (res) => {
+                // SÉCURITÉ : Vérification robuste du statut pour éviter le crash "undefined"
+                let statusStr = "";
+                if (res && res.status) {
+                    statusStr = (typeof res.status === 'object') ? res.status.name : res.status;
+                }
+
+                if (statusStr === 'approved') {
+                    this.handleFinalSuccess(res.id);
+                } else {
+                    this.loading = false;
+                    // Si l'utilisateur ferme simplement la fenêtre
+                    console.log("Paiement non complété :", statusStr);
                 }
             }
-        },
-        onComplete: (res) => {
-            const status = res.status.name || res.status;
-            if (status === 'approved') {
-                this.handleFinalSuccess(res.id);
-            } else {
-                this.loading = false;
-            }
-        }
-    }).open();
+        }).open();
+    } catch (error) {
+        this.loading = false;
+        console.error("Erreur FedaPay Init:", error);
+    }
 },
 
+
+                
                 setupPayPal() {
                     if(!window.paypal) return;
                     paypal.Buttons({
