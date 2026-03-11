@@ -219,8 +219,22 @@
                     }).render('#paypal-button-container');
                 },
 
+
+
+
+
+
+
                 async handleFinalSuccess(trxId) {
                     this.loading = true;
+                    
+                    // 1. On vérifie que l'e-mail existe avant d'aller plus loin
+                    if (!this.email) {
+                        alert("Erreur critique: Email manquant. Impossible de finaliser l'inscription.");
+                        this.loading = false;
+                        return;
+                    }
+                    
                     try {
                         await fetch(this.WEBHOOK_MAKE, {
                             method: 'POST',
@@ -234,11 +248,15 @@
                         });
                         this.success = true;
                     } catch (e) {
-                        alert("Erreur de synchronisation CRM. Notez l'ID : " + trxId);
+                        alert("Erreur de synchronisation CRM. NOTEZ L'ID Transaction: " + trxId);
                     } finally {
                         this.loading = false;
                     }
-                }
+                },
+
+
+
+                
             }
         }
     </script>
