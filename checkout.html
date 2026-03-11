@@ -168,30 +168,39 @@
                     this.setupPayPal();
                 },
 
-                payWithFeda() {
-                    this.loading = true;
-                    FedaPay.init({
-                        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
-                        transaction: {
-                            amount: this.amount,
-                            description: 'Vox Mastery Executive 2026',
-                            customer: { 
-                                firstname: this.name, // Utilise le nom modifié dans le champ
-                                email: this.email,    // Utilise l'email modifié
-                                phone_number: {
-                                    number: this.phone.replace(/\s/g, '') // Nettoie les espaces
-                                }
-                            }
-                        },
-                        onComplete: (res) => {
-                            if(res.status === 'approved' || res.status.name === 'approved') {
-                                this.handleFinalSuccess(res.id);
-                            } else {
-                                this.loading = false;
-                            }
-                        }
-                    }).open();
-                },
+payWithFeda() {
+    this.loading = true;
+
+    // On sépare le nom complet pour remplir "Nom" et "Prénom" chez FedaPay
+    const nameParts = this.name.trim().split(' ');
+    const firstname = nameParts[0] || ''; // Premier mot -> Prénom
+    const lastname = nameParts.slice(1).join(' ') || ' '; // Le reste -> Nom (espace si vide car requis)
+
+    FedaPay.init({
+        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
+        transaction: {
+            amount: this.amount,
+            description: 'Vox Mastery Executive 2026',
+            customer: { 
+                firstname: firstname, 
+                lastname: lastname,
+                email: this.email.trim(),
+                phone_number: {
+                    number: this.phone.replace(/\s/g, ''), // Supprime les espaces
+                    country: 'bj' // Code pays par défaut (Bénin)
+                }
+            }
+        },
+        onComplete: (res) => {
+            const status = res.status.name || res.status;
+            if (status === 'approved') {
+                this.handleFinalSuccess(res.id);
+            } else {
+                this.loading = false;
+            }
+        }
+    }).open();
+},
 
                 setupPayPal() {
                     if(!window.paypal) return;
