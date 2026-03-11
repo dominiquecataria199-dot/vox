@@ -172,13 +172,21 @@
 
 
 
-                payWithFeda() {
+               payWithFeda() {
     this.loading = true;
 
-    // Découpage propre du nom pour FedaPay
-    const nameParts = this.name.trim().split(/\s+/);
-    const fname = nameParts[0] || 'Client';
-    const lname = nameParts.slice(1).join(' ') || ' '; // Espace requis par Feda si vide
+    // 1. Nettoyage et préparation des données
+    const cleanName = this.name.trim() || "Client";
+    const nameParts = cleanName.split(/\s+/);
+    const fname = nameParts.shift(); // Premier mot
+    const lname = nameParts.join(' ') || " "; // Le reste ou un espace (requis)
+    
+    const cleanEmail = this.email.trim();
+    // On retire tout sauf les chiffres pour le téléphone
+    const cleanPhone = this.phone.replace(/[^0-9]/g, '');
+
+    // Debug pour toi : vérifie dans la console (F12) ce qui est envoyé
+    console.log("Data envoyée à FedaPay:", { fname, lname, cleanEmail, cleanPhone });
 
     try {
         FedaPay.init({
@@ -187,17 +195,19 @@
                 amount: this.amount,
                 description: 'Vox Mastery Executive 2026',
                 customer: { 
-                    firstname: fname, 
+                    // On double les clés pour être sûr de couvrir toutes les versions du SDK
+                    firstname: fname,
+                    first_name: fname, 
                     lastname: lname,
-                    email: this.email.trim(),
+                    last_name: lname,
+                    email: cleanEmail,
                     phone_number: {
-                        number: this.phone.replace(/[^0-9]/g, ''), // On ne garde que les chiffres
-                        country: 'bj'
+                        number: cleanPhone,
+                        country: 'BJ' // Code ISO du Bénin
                     }
                 }
             },
             onComplete: (res) => {
-                // SÉCURITÉ : Vérification robuste du statut pour éviter le crash "undefined"
                 let statusStr = "";
                 if (res && res.status) {
                     statusStr = (typeof res.status === 'object') ? res.status.name : res.status;
@@ -207,17 +217,14 @@
                     this.handleFinalSuccess(res.id);
                 } else {
                     this.loading = false;
-                    // Si l'utilisateur ferme simplement la fenêtre
-                    console.log("Paiement non complété :", statusStr);
                 }
             }
         }).open();
     } catch (error) {
         this.loading = false;
-        console.error("Erreur FedaPay Init:", error);
+        console.error("Erreur d'initialisation FedaPay:", error);
     }
 },
-
 
                 
                 setupPayPal() {
