@@ -174,52 +174,61 @@
 
 
 
-             payWithFeda() {
-    this.loading = true;
-
-    // 1. Préparation du Nom/Prénom
-    const nameParts = this.name.trim().split(/\s+/);
-    const fname = nameParts.shift() || "Client";
-    const lname = nameParts.join(' ') || " ";
-    
-    // 2. Nettoyage extrême : on ne garde que les chiffres et on FORCE le "+"
-    let digitsOnly = this.phone.replace(/[^0-9]/g, ''); 
-    let formattedPhone = '+' + digitsOnly; 
-    // Résultat : +2290196475885
-
-    try {
-        FedaPay.init({
-            public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
-            transaction: {
-                amount: this.amount,
-                description: 'Vox Mastery Executive 2026',
-                customer: { 
-                    firstname: fname,
-                    lastname: lname,
-                    email: this.email.trim(),
-                    phone_number: {
-                        // On envoie le numéro complet avec le +
-                        number: formattedPhone
-                        // SUPPRESSION DE "country" : le widget va détecter le drapeau tout seul grâce au +
-                    }
+            payWithFeda() {
+                this.loading = true;
+            
+                // 1. Préparation du Nom/Prénom
+                const nameParts = this.name.trim().split(/\s+/);
+                const fname = nameParts.shift() || "Client";
+                const lname = nameParts.join(' ') || " ";
+                
+                // 2. Nettoyage strict (que des chiffres)
+                let cleanPhone = this.phone.replace(/[^0-9]/g, '');
+            
+                // 3. LE CORRECTIF ANTI-BUG FEDAPAY (Bénin 10 chiffres)
+                // Si le numéro commence par 22901 et fait 13 caractères (ex: 229 01 96475885)
+                if (cleanPhone.startsWith('22901') && cleanPhone.length === 13) {
+                    // On supprime le "01" pour que le widget FedaPay accepte les 8 chiffres
+                    cleanPhone = '229' + cleanPhone.substring(5); 
+                }
+            
+                // On force l'ajout du "+" pour le format international absolu
+                let formattedPhone = '+' + cleanPhone;
+            
+                console.log("Numéro formaté pour contourner le bug FedaPay :", formattedPhone);
+            
+                try {
+                    FedaPay.init({
+                        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
+                        transaction: {
+                            amount: this.amount,
+                            description: 'Vox Mastery Executive 2026',
+                            customer: { 
+                                firstname: fname,
+                                lastname: lname,
+                                email: this.email.trim(),
+                                phone_number: {
+                                    number: formattedPhone
+                                    // On laisse FedaPay détecter le pays seul grâce au "+"
+                                }
+                            }
+                        },
+                        onComplete: (res) => {
+                            let statusStr = (res && res.status) ? 
+                                ((typeof res.status === 'object') ? res.status.name : res.status) : "";
+            
+                            if (statusStr === 'approved') {
+                                this.handleFinalSuccess(res.id);
+                            } else {
+                                this.loading = false;
+                            }
+                        }
+                    }).open();
+                } catch (error) {
+                    this.loading = false;
+                    console.error("Erreur FedaPay:", error);
                 }
             },
-            onComplete: (res) => {
-                let statusStr = (res && res.status) ? 
-                    ((typeof res.status === 'object') ? res.status.name : res.status) : "";
-
-                if (statusStr === 'approved') {
-                    this.handleFinalSuccess(res.id);
-                } else {
-                    this.loading = false;
-                }
-            }
-        }).open();
-    } catch (error) {
-        this.loading = false;
-        console.error("Erreur FedaPay:", error);
-    }
-},        
 
                 
                 setupPayPal() {
