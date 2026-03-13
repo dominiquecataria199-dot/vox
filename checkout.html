@@ -11,14 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- SDK PAIEMENTS -->
+    <!-- PayPal Live (Remplacer Client ID) -->
     <script src="https://www.paypal.com/sdk/js?client-id=AYdbiOBrS1LfLCWhleavJP0U94wSEARnYj_HO-VGRCqDeMIh2HDDupr6ll4qfiZBXxxjYg8ioIkKEyqb&currency=USD"></script>
+    <!-- FedaPay -->
     <script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { heading: ['Bebas Neue', 'sans-serif'], body: ['Manrope', 'sans-serif'] },
+                    fontFamily: { heading:['Bebas Neue', 'sans-serif'], body: ['Manrope', 'sans-serif'] },
                     colors: { void: '#0A0A0A', paper: '#111111', neon: '#6366f1', accent: '#a855f7' }
                 }
             }
@@ -38,7 +40,7 @@
     <!-- HEADER -->
     <header class="py-6 px-8 flex justify-between items-center bg-void/50 backdrop-blur-md border-b border-white/5">
         <div class="font-heading text-2xl tracking-[0.2em] text-white uppercase">VOX MASTERY</div>
-        <div class="flex items-center gap-2 text-[10px] text-neon font-mono uppercase border border-neon/30 px-3 py-1 rounded-full">
+        <div class="flex items-center gap-2 text-[10px] text-green-500 font-mono uppercase border border-neon/30 px-3 py-1 rounded-full">
             <span class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></span> Terminal Sécurisé
         </div>
     </header>
@@ -46,7 +48,7 @@
     <main class="flex-grow flex items-center justify-center p-4 md:p-8 lg:p-12">
         <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-2xl shadow-2xl border border-white/5">
             
-            <!-- GAUCHE : RÉCAPITULATIF (FOND NOIR) -->
+            <!-- GAUCHE : RÉCAPITULATIF -->
             <div class="lg:col-span-5 bg-paper p-8 md:p-12 flex flex-col justify-center border-r border-white/5">
                 <h2 class="font-heading text-4xl text-white mb-8 tracking-tight uppercase">Votre Admission</h2>
                 
@@ -79,41 +81,42 @@
                 </div>
             </div>
 
-            <!-- DROITE : TERMINAL & INFOS (FOND BLANC) -->
+            <!-- DROITE : TERMINAL -->
             <div class="lg:col-span-7 bg-white p-8 md:p-12 text-void flex flex-col justify-center">
                 <div class="max-w-md mx-auto w-full">
                     
-                    <!-- 1. INFOS DE FACTURATION (MODIFIABLES) -->
+                    <div class="text-center mb-10">
+                        <h3 class="font-heading text-3xl mb-2 uppercase tracking-tight">Règlement sécurisé</h3>
+                        <p class="text-gray-400 text-sm">Vérifiez vos informations et sélectionnez votre méthode.</p>
+                    </div>
+
+                    <!-- 1. INFOS DE FACTURATION (Épuré) -->
                     <div class="mb-10">
-                        <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-6 border-b pb-2">Informations du dossier</h3>
-                        <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] uppercase text-gray-500 mb-1">Nom Complet</label>
-                                <input type="text" x-model="name" class="w-full border border-gray-200 p-3 rounded-lg text-sm font-bold">
+                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nom du Dossier</label>
+                                <!-- Affichage simple, on ne demande plus au client d'éditer ici pour éviter la friction -->
+                                <div class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm font-bold truncate" x-text="name"></div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] uppercase text-gray-500 mb-1">Email professionnel</label>
-                                    <input type="email" x-model="email" class="w-full border border-gray-200 p-3 rounded-lg text-sm font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase text-gray-500 mb-1">Téléphone / WhatsApp</label>
-                                    <input type="tel" x-model="phone" class="w-full border border-gray-200 p-3 rounded-lg text-sm font-bold">
-                                </div>
+                            <div>
+                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Contact Pro</label>
+                                <div class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm font-bold truncate" x-text="email"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. MÉTHODES DE PAIEMENT -->
-                    <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-6 border-b pb-2">Moyen de règlement</h3>
-                    <div class="grid grid-cols-2 gap-4 mb-10">
+                    <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-4 border-b pb-2">Passerelle de paiement</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
                         <div @click="gateway = 'fedapay'" :class="gateway === 'fedapay' ? 'selected' : ''" class="method-card p-5 rounded-xl flex flex-col items-center text-center cursor-pointer group">
                             <i class="fa-solid fa-mobile-screen-button text-2xl text-gray-700 mb-2"></i>
                             <span class="text-[10px] font-bold uppercase">Local / MoMo</span>
+                            <span class="text-[8px] text-gray-400 mt-1">Saisie du numéro à l'étape suivante</span>
                         </div>
                         <div @click="gateway = 'paypal'" :class="gateway === 'paypal' ? 'selected' : ''" class="method-card p-5 rounded-xl flex flex-col items-center text-center cursor-pointer group">
                             <i class="fa-brands fa-paypal text-2xl text-blue-700 mb-2"></i>
                             <span class="text-[10px] font-bold uppercase">International</span>
+                             <span class="text-[8px] text-gray-400 mt-1">Connexion PayPal requise</span>
                         </div>
                     </div>
 
@@ -122,19 +125,19 @@
                     
                     <button x-show="gateway === 'fedapay'" @click="payWithFeda()" 
                         class="w-full bg-void text-white py-5 rounded-xl font-bold uppercase tracking-[0.2em] text-xs hover:bg-neon transition-all shadow-xl flex justify-center items-center gap-3">
-                        <span x-show="!loading">Finaliser le règlement</span>
-                        <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Traitement...</span>
+                        <span x-show="!loading">Payer avec FedaPay</span>
+                        <span x-show="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Ouverture sécurisée...</span>
                     </button>
 
-                    <p class="text-center text-[9px] text-gray-400 mt-8 uppercase tracking-[0.3em] font-bold">
-                        <i class="fa-solid fa-lock text-green-500 mr-2"></i> Certifié PCI-DSS • Sécurisé
+                    <p class="text-center text-[9px] text-gray-400 mt-6 uppercase tracking-[0.3em] font-bold">
+                        <i class="fa-solid fa-lock text-green-500 mr-2"></i> Certifié PCI-DSS
                     </p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- SUCCESS MODAL -->
+    <!-- SUCCESS MODAL (Inchangé) -->
     <div x-show="success" class="fixed inset-0 z-[100] flex items-center justify-center bg-void/98 p-6" x-cloak x-transition>
         <div class="text-center animate-fadeIn">
             <div class="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -149,95 +152,70 @@
     <script>
         function paymentSystem() {
             return {
-                name: '',
+                name: 'Client',
                 email: '',
-                phone: '',
                 gateway: 'fedapay',
                 loading: false,
                 success: false,
                 amount: 850000,
+                // Webhook pour dire à Make "Le client a payé"
                 WEBHOOK_MAKE: 'https://hook.eu1.make.com/q50cvrq1636zcg3xanqada7serxs6h15',
 
                 init() {
                     const urlParams = new URLSearchParams(window.location.search);
-                    // Récupération dynamique depuis l'URL
-                    this.name = urlParams.get('name') || '';
+                    // On récupère Nom et Email. Le téléphone n'est plus géré ici.
+                    this.name = urlParams.get('name') || 'Client';
                     this.email = urlParams.get('email') || '';
-                    this.phone = urlParams.get('phone') || '';
                     
                     this.setupPayPal();
                 },
 
+                payWithFeda() {
+                    this.loading = true;
 
+                    // On prépare le nom (FedaPay aime quand c'est séparé en 2)
+                    const nameParts = this.name.trim().split(/\s+/);
+                    const fname = nameParts.shift() || "Client";
+                    const lname = nameParts.join(' ') || " ";
 
+                    try {
+                        FedaPay.init({
+                            public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
+                            transaction: {
+                                amount: this.amount,
+                                description: 'Vox Mastery Executive 2026',
+                                customer: { 
+                                    firstname: fname,
+                                    lastname: lname,
+                                    email: this.email
+                                    // LA CLÉ : ON N'ENVOIE PLUS LE TELEPHONE !
+                                    // FedaPay l'affichera donc vide et laissera le client le taper proprement
+                                }
+                            },
+                            onComplete: (res) => {
+                                let statusStr = (res && res.status) ? 
+                                    ((typeof res.status === 'object') ? res.status.name : res.status) : "";
 
-
-
-
-            payWithFeda() {
-                this.loading = true;
-            
-                // 1. Préparation du Nom/Prénom
-                const nameParts = this.name.trim().split(/\s+/);
-                const fname = nameParts.shift() || "Client";
-                const lname = nameParts.join(' ') || " ";
-                
-                // 2. Nettoyage strict (que des chiffres)
-                let cleanPhone = this.phone.replace(/[^0-9]/g, '');
-            
-                // 3. LE CORRECTIF ANTI-BUG FEDAPAY (Bénin 10 chiffres)
-                // Si le numéro commence par 22901 et fait 13 caractères (ex: 229 01 96475885)
-                if (cleanPhone.startsWith('22901') && cleanPhone.length === 13) {
-                    // On supprime le "01" pour que le widget FedaPay accepte les 8 chiffres
-                    cleanPhone = '229' + cleanPhone.substring(5); 
-                }
-            
-                // On force l'ajout du "+" pour le format international absolu
-                let formattedPhone = '+' + cleanPhone;
-            
-                console.log("Numéro formaté pour contourner le bug FedaPay :", formattedPhone);
-            
-                try {
-                    FedaPay.init({
-                        public_key: 'pk_live_7lvC3MGGdjrdWEXaRP1Dm3QD',
-                        transaction: {
-                            amount: this.amount,
-                            description: 'Vox Mastery Executive 2026',
-                            customer: { 
-                                firstname: fname,
-                                lastname: lname,
-                                email: this.email.trim(),
-                                phone_number: {
-                                    number: formattedPhone
-                                    // On laisse FedaPay détecter le pays seul grâce au "+"
+                                if (statusStr === 'approved') {
+                                    this.handleFinalSuccess(res.id);
+                                } else {
+                                    this.loading = false;
                                 }
                             }
-                        },
-                        onComplete: (res) => {
-                            let statusStr = (res && res.status) ? 
-                                ((typeof res.status === 'object') ? res.status.name : res.status) : "";
-            
-                            if (statusStr === 'approved') {
-                                this.handleFinalSuccess(res.id);
-                            } else {
-                                this.loading = false;
-                            }
-                        }
-                    }).open();
-                } catch (error) {
-                    this.loading = false;
-                    console.error("Erreur FedaPay:", error);
-                }
-            },
+                        }).open();
+                    } catch (error) {
+                        this.loading = false;
+                        console.error("Erreur FedaPay:", error);
+                    }
+                },
 
-                
                 setupPayPal() {
                     if(!window.paypal) return;
                     paypal.Buttons({
                         style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
                         createOrder: (data, actions) => {
                             return actions.order.create({
-                                purchase_units: [{
+                                purchase_units:[{
                                     amount: { currency_code: 'USD', value: '1415.00' }
                                 }]
                             });
@@ -259,7 +237,6 @@
                             body: JSON.stringify({
                                 email: this.email,
                                 name: this.name,
-                                phone: this.phone,
                                 transactionId: trxId,
                                 gateway: this.gateway,
                                 status: 'PAID'
