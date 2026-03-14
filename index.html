@@ -74,13 +74,13 @@
       :class="{ 'overflow-hidden': isPageLoading || showAppModal }">
 
 
-        <!-- ÉCRAN DE CHARGEMENT PREMIUM -->
+<!-- ÉCRAN DE CHARGEMENT PREMIUM (CORRIGÉ : SANS x-cloak) -->
+    <!-- Il s'affiche instantanément grâce au HTML/CSS, puis Alpine le fait disparaître avec x-show -->
     <div x-show="isPageLoading" 
          x-transition:leave="transition ease-in duration-500"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-void"
-         x-cloak>
+         class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-void">
         
         <!-- Animation technologique -->
         <div class="relative flex items-center justify-center w-24 h-24 mb-8">
