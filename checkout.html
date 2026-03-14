@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finalisation du Règlement | VOX MASTERY</title>
+    <title>Finalisation de votre candidacture | VOX MASTERY</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
@@ -37,20 +37,20 @@
 
 <body class="bg-void text-gray-200 font-body antialiased min-h-screen flex flex-col" x-data="paymentSystem()">
 
-    <!-- HEADER -->
+    <!-- HEADER 
     <header class="py-6 px-8 flex justify-between items-center bg-void/50 backdrop-blur-md border-b border-white/5">
         <div class="font-heading text-2xl tracking-[0.2em] text-white uppercase">VOX MASTERY</div>
         <div class="flex items-center gap-2 text-[10px] text-green-500 font-mono uppercase border border-neon/30 px-3 py-1 rounded-full">
             <span class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></span> Terminal Sécurisé
         </div>
-    </header>
+    </header> -->
 
     <main class="flex-grow flex items-center justify-center p-4 md:p-8 lg:p-12">
         <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-2xl shadow-2xl border border-white/5">
             
             <!-- GAUCHE : RÉCAPITULATIF -->
             <div class="lg:col-span-5 bg-paper p-8 md:p-12 flex flex-col justify-center border-r border-white/5">
-                <h2 class="font-heading text-4xl text-white mb-8 tracking-tight uppercase">Votre Admission</h2>
+                <h2 class="font-heading text-4xl text-white mb-8 tracking-tight uppercase">Votre Admission à VOX MASTERY</h2>
                 
                 <div class="space-y-6 mb-10">
                     <div class="flex gap-4">
@@ -87,19 +87,19 @@
                     
                     <div class="text-center mb-10">
                         <h3 class="font-heading text-3xl mb-2 uppercase tracking-tight">Règlement sécurisé</h3>
-                        <p class="text-gray-400 text-sm">Vérifiez vos informations et sélectionnez votre méthode.</p>
+                        <p class="text-gray-400 text-sm">Vérifiez vos informations et sélectionnez votre méthode paiement.</p>
                     </div>
 
                     <!-- 1. INFOS DE FACTURATION (Épuré) -->
                     <div class="mb-10">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nom du Dossier</label>
+                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Nom </label>
                                 <!-- Affichage simple, on ne demande plus au client d'éditer ici pour éviter la friction -->
                                 <div class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm font-bold truncate" x-text="name"></div>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Contact Pro</label>
+                                <label class="block text-[10px] uppercase text-gray-500 mb-1 font-bold">Contact </label>
                                 <div class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm font-bold truncate" x-text="email"></div>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div @click="gateway = 'fedapay'" :class="gateway === 'fedapay' ? 'selected' : ''" class="method-card p-5 rounded-xl flex flex-col items-center text-center cursor-pointer group">
                             <i class="fa-solid fa-mobile-screen-button text-2xl text-gray-700 mb-2"></i>
-                            <span class="text-[10px] font-bold uppercase">Local / MoMo</span>
+                            <span class="text-[10px] font-bold uppercase">FedaPay</span>
                             <span class="text-[8px] text-gray-400 mt-1">Saisie du numéro à l'étape suivante</span>
                         </div>
                         <div @click="gateway = 'paypal'" :class="gateway === 'paypal' ? 'selected' : ''" class="method-card p-5 rounded-xl flex flex-col items-center text-center cursor-pointer group">
@@ -149,7 +149,7 @@
             <p class="text-gray-400 text-xl max-w-md mx-auto mb-10 font-light" x-text="`Félicitations ${name}. Le protocole de démarrage de votre mentoring vient de vous être envoyé par e-mail.`"></p>
             
             <!-- BOUTON CORRIGÉ : Retour à l'accueil -->
-            <button @click="window.location.href='/'" class="px-12 py-4 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon transition-all">Terminer</button>
+            <button @click="window.location.href='https://vox-mastery.cataria-systems.com/' " class="px-12 py-4 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon transition-all">Terminer</button>
         </div>
     </div>
 
