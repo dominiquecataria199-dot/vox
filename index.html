@@ -68,9 +68,34 @@
                     </style>
                 </head>
 
+<!-- On empêche le scroll pendant le chargement ou si la modale est ouverte -->
 <body class="bg-void text-gray-200 font-body antialiased" 
       x-data="coachingSystem()" 
-      :class="{ 'overflow-hidden': showAppModal }">
+      :class="{ 'overflow-hidden': isPageLoading || showAppModal }">
+
+
+        <!-- ÉCRAN DE CHARGEMENT PREMIUM -->
+    <div x-show="isPageLoading" 
+         x-transition:leave="transition ease-in duration-500"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-void"
+         x-cloak>
+        
+        <!-- Animation technologique -->
+        <div class="relative flex items-center justify-center w-24 h-24 mb-8">
+            <!-- Cercle externe qui tourne vite -->
+            <div class="absolute inset-0 border-t-2 border-neon rounded-full animate-spin"></div>
+            <!-- Cercle interne qui tourne lentement dans l'autre sens -->
+            <div class="absolute inset-3 border-b-2 border-accent rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 2s;"></div>
+            <!-- Icône centrale -->
+            <i class="fa-solid fa-microphone-lines text-white text-2xl animate-pulse"></i>
+        </div>
+        
+        <h2 class="text-neon font-mono text-[10px] tracking-[0.4em] uppercase animate-pulse">Initialisation Vox Mastery...</h2>
+    </div>
+
+    
                 <!-- TOP BAR RESPONSIVE -->
                 <div class="bg-neon text-white text-[9px] md:text-[10px] text-center py-2.5 font-mono uppercase px-4 sticky top-0 z-[100]">
                     <div class="max-w-7xl mx-auto flex justify-center items-center gap-4 overflow-hidden whitespace-nowrap">
@@ -185,7 +210,7 @@
 
                 
 <!-- SECTION : MASTERCLASS (LUMINEUSE ET INTERACTIVE) -->
-<section class="py-24 bg-white relative overflow-hidden" x-show="mode !== 'audit_only'">
+<section class="py-24 bg-white relative overflow-hidden" x-show="mode === 'full'">
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-neon/5 rounded-full blur-[120px]"></div>
     </div>
@@ -315,7 +340,7 @@
 
 
                                     <!-- SECTION : LE MANIFESTE (CORRECTIONS DE TAILLE) -->
-                <section class="py-24 bg-void relative overflow-hidden" x-show="mode !== 'audit_only'">
+<section class="py-24 bg-void relative overflow-hidden" x-show="mode === 'full'">
                     <div class="max-w-7xl mx-auto px-6">
                         <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
                             
@@ -377,7 +402,7 @@
 
 
                 <!-- SECTION : LE RÉCIT DE L'HUMILIATION (STORYTELLING PUR) -->
-                <section class="py-24 bg-cream" x-show="mode !== 'audit_only'">
+<section class="py-24 bg-cream" x-show="mode === 'full'">
                     <div class="max-w-3xl mx-auto px-6">
                         
                         <!-- En-tête centré pour l'intro -->
@@ -441,7 +466,7 @@
 
         
                 <!-- SECTION : DOULEURS (STRUCTURE LINÉAIRE & PUISSANTE) -->
-            <section class="py-32 bg-void relative overflow-hidden border-y border-white/5" x-show="mode !== 'audit_only'">
+<section class="py-32 bg-void relative overflow-hidden border-y border-white/5" x-show="mode === 'full'">
     <!-- Effets de fond -->
     <div class="absolute inset-0 opacity-10">
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neon/20 rounded-full blur-[120px]"></div>
@@ -568,7 +593,7 @@
 
 
                 <!-- SECTION : LA PROJECTION (VOTRE NOUVELLE RÉALITÉ) -->
-                <section class="py-32 bg-white relative overflow-hidden" x-show="mode !== 'audit_only'">
+<section class="py-32 bg-white relative overflow-hidden" x-show="mode === 'full'">
                     <div class="max-w-6xl mx-auto px-6 relative z-10">
                         <div class="grid md:grid-cols-2 gap-16 items-center">
                             <div>
@@ -620,8 +645,7 @@
 
 
             <!-- SECTION : LE DÉCALAGE FATAL (VERSION CLAIRE POUR CASSÉ LE NOIR) -->
-        <section class="py-24 bg-cream relative overflow-hidden" x-show="mode !== 'audit_only'">
-    <!-- On ajoute un petit accent Neon très léger en fond -->
+<section class="py-24 bg-cream relative overflow-hidden" x-show="mode === 'full'">
     <div class="absolute top-0 right-0 w-64 h-64 bg-neon/5 rounded-full blur-3xl"></div>
     
     <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
@@ -656,7 +680,7 @@
 
 
     <!-- SECTION : AUDIT (FOND NOIR TECHNIQUE) -->
-    <section id="audit" x-show="mode !== 'apply_only'" class="py-32 bg-void relative">
+<section id="audit" class="py-32 bg-void relative" x-show="mode === 'full' || mode === 'audit_only'">
         <div class="max-w-4xl mx-auto px-6 text-center mb-16 relative z-10">
             <span class="text-neon font-mono text-[10px] tracking-[0.3em] uppercase mb-4 inline-block">Vocal Presence Analysis (V.P.A)</span>
             <h2 class="font-heading text-3xl md:text-5xl text-white mb-6 uppercase">Testez votre <span class="text-neon font-black italic">Impact</span> vocale.</h2>
@@ -961,8 +985,7 @@
 
 
   <!-- SECTION : LE PROTOCOLE (DESIGN CORRIGÉ POUR DISTINCTION NETTE) -->
-<section id="programme" x-show="mode !== 'audit_only'" class="py-32 bg-[#F3F3F1] border-t-4 border-neon/10 relative overflow-hidden">
-    <!-- Motif de fond subtil pour casser le côté "plat" du blanc -->
+<section id="programme" class="py-32 bg-[#F3F3F1] border-t-4 border-neon/10 relative overflow-hidden" x-show="mode !== 'audit_only'">
     <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -1285,11 +1308,12 @@ function coachingSystem() {
         form: { name: '', whatsapp: '', email: '' },
         appData: { name: '', email: '', position: '', challenge: '', whatsapp: '' },
         mode: 'full',
-        auditHeaderTitle: '', // Sera rempli dynamiquement
-        auditHeaderDesc: '',  // Sera rempli dynamiquement
-        auditBadge: '',       // Sera rempli dynamiquement
+        auditHeaderTitle: '', 
+        auditHeaderDesc: '',  
+        auditBadge: '',       
         leadEmail: '',
         loadingLead: false,
+        isPageLoading: true, 
 
         get timerStr() { 
             return `00:${this.seconds.toString().padStart(2, '0')}`; 
@@ -1321,7 +1345,7 @@ function coachingSystem() {
                 this.auditBadge = 'Action Requise : Dossier Incomplet';
                 this.auditHeaderTitle = 'Dernière étape : Votre Analyse Vocale';
                 this.auditHeaderDesc = 'Votre candidature est pré-enregistrée. Pour la valider définitivement, effectuez ce test technique de 2 minutes.';
-                setTimeout(() => this.scrollTo('audit'), 500);
+                setTimeout(() => this.scrollTo('audit'), 800);
             } 
             else if (stepParam === 'test') {
                 // CAS : Inscrit Newsletter qui veut juste tester (Mail "Bienvenue Insider")
@@ -1329,7 +1353,7 @@ function coachingSystem() {
                 this.auditBadge = 'Accès Insider : Analyse Prioritaire';
                 this.auditHeaderTitle = "Analyse d'Autorité Vocale";
                 this.auditHeaderDesc = "Bienvenue. Ce diagnostic mesure votre impact et votre débit pour identifier vos leviers de progression immédiats.";
-                setTimeout(() => this.scrollTo('audit'), 500);
+                setTimeout(() => this.scrollTo('audit'), 800);
             }
             else if (stepParam === 'apply') {
                 // CAS : Vient pour candidater après avoir eu ses résultats
@@ -1339,6 +1363,13 @@ function coachingSystem() {
             else {
                 this.mode = 'full';
             }
+
+                 // 2. ON CACHE LE CHARGEMENT APRÈS 600 MILLISECONDES
+            // (Le temps que le site cache les mauvaises sections en arrière-plan)
+            setTimeout(() => {
+                this.isPageLoading = false;
+            }, 600);
+     
         },
 
 
