@@ -137,15 +137,19 @@
         </div>
     </main>
 
-    <!-- SUCCESS MODAL (Inchangé) -->
+<!-- SUCCESS MODAL -->
     <div x-show="success" class="fixed inset-0 z-[100] flex items-center justify-center bg-void/98 p-6" x-cloak x-transition>
         <div class="text-center animate-fadeIn">
             <div class="w-24 h-24 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
                 <i class="fa-solid fa-check text-4xl"></i>
             </div>
             <h2 class="text-white font-heading text-6xl mb-4 uppercase tracking-tighter">Bienvenue au Board</h2>
-            <p class="text-gray-400 text-xl max-w-md mx-auto mb-10 font-light" x-text="`Félicitations ${name}, votre accès a été activé.`"></p>
-            <button @click="window.location.href='/'" class="px-12 py-4 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon transition-all">Accéder à l'espace membre</button>
+            
+            <!-- TEXTE CORRIGÉ : On parle de protocole, pas d'accès plateforme -->
+            <p class="text-gray-400 text-xl max-w-md mx-auto mb-10 font-light" x-text="`Félicitations ${name}. Le protocole de démarrage de votre mentoring vient de vous être envoyé par e-mail.`"></p>
+            
+            <!-- BOUTON CORRIGÉ : Retour à l'accueil -->
+            <button @click="window.location.href='/'" class="px-12 py-4 bg-white text-void font-bold uppercase text-xs tracking-widest hover:bg-neon transition-all">Terminer</button>
         </div>
     </div>
 
