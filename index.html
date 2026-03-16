@@ -1655,7 +1655,7 @@ function counterSystem() {
     </style>
 
 
-<!-- MODAL VIDÉO (MODE CINÉMA) -->
+<!-- MODAL VIDÉO (MODE CINÉMA - BOUTON INTÉGRÉ AU CADRE) -->
 <div x-show="showVideoModal" 
      class="fixed inset-0 z-[500] flex items-center justify-center bg-void/98 p-4 md:p-12"
      x-transition:enter="transition ease-out duration-300"
@@ -1663,23 +1663,23 @@ function counterSystem() {
      x-transition:enter-end="opacity-100 scale-100"
      x-cloak>
     
-    <!-- Zone de clic extérieure pour fermer -->
+    <!-- Zone de clic extérieure pour fermer (Fond noir opaque) -->
     <div @click="closeVideoModal()" class="absolute inset-0 cursor-pointer"></div>
 
-    <!-- NOUVEAU BOUTON FERMER : Clair, fixe et toujours visible -->
-    <button @click="closeVideoModal()" 
-            class="fixed top-6 right-6 md:top-10 md:right-10 z-[600] flex items-center gap-3 px-5 py-2.5 bg-white/10 border border-white/20 text-white rounded-full backdrop-blur-md hover:bg-neon hover:border-neon transition-all duration-300 shadow-2xl group">
-        <span class="font-mono text-[10px] uppercase tracking-widest font-bold">Fermer</span>
-        <i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i>
-    </button>
-
-    <!-- Conteneur Vidéo -->
-    <div class="relative w-full max-w-6xl aspect-video bg-black shadow-[0_0_100px_rgba(0,0,0,0.8)] border border-white/10 z-[510]">
+    <!-- Le "Cadre" de la vidéo (Relative = le bouton s'accrochera par rapport à lui) -->
+    <div class="relative w-full max-w-6xl aspect-video bg-black shadow-[0_30px_100px_rgba(0,0,0,0.8)] border border-white/10 z-[510] rounded-sm">
         
+        <!-- NOUVEAU BOUTON FERMER : Accroché DANS le cadre, en haut à droite -->
+        <button @click="closeVideoModal()" 
+                class="absolute -top-12 right-0 md:top-4 md:right-4 z-[600] flex items-center gap-2 px-4 py-2 bg-black/60 border border-white/20 text-white rounded-full backdrop-blur-md hover:bg-neon hover:border-neon transition-all duration-300 group">
+            <span class="font-mono text-[9px] uppercase tracking-widest font-bold">Fermer</span>
+            <i class="fa-solid fa-xmark text-sm group-hover:rotate-90 transition-transform duration-300"></i>
+        </button>
+
         <!-- Lecteur Vidéo (Iframe dynamique) -->
         <template x-if="showVideoModal">
             <iframe 
-                class="w-full h-full shadow-2xl scale-[1.01]" 
+                class="w-full h-full scale-[1.01] rounded-sm" 
                 :src="videoUrl" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
