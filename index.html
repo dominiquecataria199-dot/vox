@@ -1656,41 +1656,36 @@ function counterSystem() {
 
 
 
-<!-- MODAL VIDÉO CINÉMA AMÉLIORÉ -->
-<div x-show="showVideoModal"
-     x-transition:enter="transition ease-out duration-400 transform opacity-0 scale-90"
+<!-- MODAL VIDÉO (MODE CINÉMA) -->
+<div x-show="showVideoModal" 
+     class="fixed inset-0 z-[500] flex items-center justify-center bg-void/98 p-4 md:p-12"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0 scale-95"
      x-transition:enter-end="opacity-100 scale-100"
-     x-transition:leave="transition ease-in duration-300 transform opacity-100 scale-100"
-     x-transition:leave-end="opacity-0 scale-90"
-     x-cloak
-     class="fixed inset-0 z-[500] flex items-center justify-center p-4 md:p-12">
+     x-cloak>
     
-    <!-- Backdrop noir + blur -->
-    <div @click="showVideoModal = false"
-         class="absolute inset-0 bg-black/95 backdrop-blur-md cursor-pointer"></div>
+    <!-- Zone de clic extérieure pour fermer (CORRIGÉ ICI) -->
+    <div @click="closeVideoModal()" class="absolute inset-0 cursor-pointer"></div>
 
-    <!-- Conteneur vidéo -->
     <div class="relative w-full max-w-6xl aspect-video bg-black shadow-2xl border border-white/10 z-[510]">
         
-        <!-- Bouton Fermer -->
-        <button @click="showVideoModal = false"
-                class="absolute top-4 right-4 z-50 flex items-center gap-2 text-white hover:text-neon text-sm font-bold uppercase tracking-widest transition-colors">
-            Fermer <i class="fa-solid fa-xmark text-lg"></i>
+        <!-- Bouton Fermer (CORRIGÉ ICI) -->
+        <button @click="closeVideoModal()" class="absolute -top-12 right-0 text-white hover:text-neon flex items-center gap-2 font-mono text-xs uppercase tracking-widest transition-colors">
+            Fermer l'accès <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-
+        
         <!-- Lecteur Vidéo -->
         <template x-if="showVideoModal">
-            <iframe class="w-full h-full shadow-2xl scale-[1.01] rounded-sm"
-                    :src="videoUrl + '?autoplay=1'"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
+            <iframe 
+                class="w-full h-full shadow-2xl scale-[1.01]" 
+                :src="videoUrl" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
             </iframe>
         </template>
-
     </div>
 </div>
-
 
 
 </body>
