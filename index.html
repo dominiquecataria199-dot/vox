@@ -1471,7 +1471,7 @@ function coachingSystem() {
             this.showAppModal = false;
             document.body.style.overflow = '';
         },
-        openVideoModal(id) {
+        openMasterclass(id) {
             const origin = window.location.origin !== 'null' ? window.location.origin : '';
             this.videoUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&color=white&origin=${origin}`;
             this.showVideoModal = true;
