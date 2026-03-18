@@ -735,39 +735,58 @@
                                 </div>
                 
                                 <div class="p-8 md:p-16">
-                                    <!-- ÉTAPE 1 - TEXTE À LIRE CORRIGÉ -->
-                                    <div x-show="step === 1" class="text-center">
-                                        <h3 class="font-heading text-2xl text-white mb-8 tracking-widest uppercase">Lisez ce texte avec assurance :</h3>
-                                        
-                                        <div class="bg-white/5 border-l-2 border-neon p-8 md:p-12 text-left mb-10">
-                                            <!-- Changement : font-body au lieu de font-heading, suppression de l'italique forcé et de l'uppercase -->
-                                            <p class="font-body text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                                                "Pendant deux minutes, exprimez votre <span class="text-white font-semibold">vision</span> ou votre manière de décider face à une situation importante. 
-                                                Parlez naturellement, sans chercher à impressionner .
-                                                L’objectif n’est pas le contenu, mais la manière dont <span class="text-neon font-semibold text-glow-light">votre voix</span> le porte" .
-                                                En suivant cet exercice, vous saurez si votre voix inspire autorité et confiance
+                                        <!-- ZONE DE LECTURE (S'affiche pendant l'Étape 1 ET l'Étape 2) -->
+                                        <div x-show="step === 1 || step === 2" class="text-center animate-fadeIn mb-10">
+                                            
+                                            <!-- Titre qui change quand on enregistre -->
+                                            <h3 class="font-heading text-2xl md:text-3xl text-white mb-4 tracking-widest uppercase">
+                                                <span x-show="step === 1">Lisez ce texte à haute voix</span>
+                                                <span x-show="step === 2" class="text-red-500 animate-pulse flex items-center justify-center gap-3">
+                                                    <span class="w-3 h-3 bg-red-500 rounded-full"></span> Enregistrement en cours...
+                                                </span>
+                                            </h3>
+                                            
+                                            <p class="text-gray-500 text-xs font-mono uppercase tracking-widest mb-8" x-show="step === 1">
+                                                Adoptez le ton d'un manager face à son équipe.
                                             </p>
+                                            
+                                            <!-- Le Texte -->
+                                            <div class="bg-paper border-l-4" :class="step === 2 ? 'border-red-500' : 'border-neon'" class="p-8 md:p-12 text-left shadow-2xl relative transition-colors duration-300">
+                                                <i class="fa-solid fa-quote-left absolute top-6 left-6 text-white/5 text-4xl"></i>
+                                                
+                                                <p class="font-body text-lg md:text-xl text-gray-300 leading-relaxed font-light relative z-10">
+                                                    "Je vous ai réunis aujourd'hui pour faire un point d'étape. Les derniers retours du marché exigent une adaptation rapide de notre part.<br><br>
+                                                    Je connais la charge de travail actuelle de vos équipes, mais nous ne pouvons pas nous permettre de temporiser. Nous allons devoir réviser nos priorités pour le mois à venir.<br><br>
+                                                    Je vous demande de faire preuve d'agilité et de me remonter les points de blocage éventuels d'ici ce soir. On avance ensemble."
+                                                </p>
+                                            </div>
                                         </div>
-                
-                                        <button @click="startRecording()" class="px-10 py-5 bg-white text-void font-bold uppercase tracking-tighter hover:bg-neon hover:text-white transition-all flex items-center gap-3 mx-auto shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                                            <i class="fa-solid fa-microphone"></i> Commencer le diagnostic
-                                        </button>
-                                    </div>
-                
-                                    <!-- ÉTAPE 2 (RECORDING) -->
-                                    <div x-show="step === 2" x-cloak class="text-center py-10">
-                                        <div class="text-neon font-mono text-xs mb-8 animate-pulse uppercase tracking-[0.3em]">Capture biométrique en cours...
-                                        <br>Parlez avec assurance… chaque mot compte pour votre Impact .
+                                        
+                                        <!-- BOUTON DÉMARRER (Uniquement Étape 1) -->
+                                        <div x-show="step === 1" class="text-center animate-fadeIn">
+                                            <button @click="startRecording()" class="group relative px-10 py-5 bg-white text-void font-bold uppercase tracking-widest text-xs hover:bg-neon hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4 mx-auto w-full md:w-auto">
+                                                <i class="fa-solid fa-microphone group-hover:scale-110 transition-transform"></i> 
+                                                <span>Commencer le diagnostic</span>
+                                            </button>
                                         </div>
-                                        <div class="flex items-end justify-center gap-1.5 h-16 mb-10">
-                                            <template x-for="i in 15">
-                                                <div class="w-2 bg-neon rounded-full" :style="`height: ${Math.random() * 100}%; animation: equalizer 0.6s infinite ease-in-out ${i * 0.05}s`"></div>
-                                            </template>
+                                        
+                                        <!-- ANIMATION D'ENREGISTREMENT ET BOUTON STOP (Uniquement Étape 2) -->
+                                        <div x-show="step === 2" x-cloak class="text-center animate-fadeIn">
+                                            <!-- Onde sonore -->
+                                            <div class="flex items-end justify-center gap-1.5 h-12 mb-6">
+                                                <template x-for="i in 15">
+                                                    <div class="w-2 bg-red-500 rounded-full" :style="`height: ${Math.random() * 100}%; animation: equalizer 0.6s infinite ease-in-out ${i * 0.05}s`"></div>
+                                                </template>
+                                            </div>
+                                            
+                                            <!-- Chronomètre -->
+                                            <div class="text-4xl font-mono text-white mb-8" x-text="timerStr">00:00</div>
+                                            
+                                            <!-- Bouton Arrêter -->
+                                            <button @click="stopRecording()" class="px-10 py-4 bg-red-500/10 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all uppercase text-xs font-bold tracking-widest mx-auto flex items-center justify-center gap-3">
+                                                <i class="fa-solid fa-stop"></i> Terminer la lecture
+                                            </button>
                                         </div>
-                                        <div class="text-5xl font-mono text-white mb-10" x-text="timerStr">00:00</div>
-                                        <button @click="stopRecording()" class="px-8 py-3 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition uppercase text-xs font-bold tracking-widest">Arrêter</button>
-                                    </div>
-                
                 
                 
                 
