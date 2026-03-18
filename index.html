@@ -735,58 +735,68 @@
                                 </div>
                 
                                 <div class="p-8 md:p-16">
-                                        <!-- ZONE DE LECTURE (S'affiche pendant l'Étape 1 ET l'Étape 2) -->
-                                        <div x-show="step === 1 || step === 2" class="text-center animate-fadeIn mb-10">
-                                            
-                                            <!-- Titre qui change quand on enregistre -->
-                                            <h3 class="font-heading text-2xl md:text-3xl text-white mb-4 tracking-widest uppercase">
-                                                <span x-show="step === 1">Lisez ce texte à haute voix</span>
-                                                <span x-show="step === 2" class="text-red-500 animate-pulse flex items-center justify-center gap-3">
-                                                    <span class="w-3 h-3 bg-red-500 rounded-full"></span> Enregistrement en cours...
-                                                </span>
-                                            </h3>
-                                            
-                                            <p class="text-gray-500 text-xs font-mono uppercase tracking-widest mb-8" x-show="step === 1">
-                                                Adoptez le ton d'un manager face à son équipe.
-                                            </p>
-                                            
-                                            <!-- Le Texte -->
-                                            <div class="bg-paper border-l-4" :class="step === 2 ? 'border-red-500' : 'border-neon'" class="p-8 md:p-12 text-left shadow-2xl relative transition-colors duration-300">
-                                                <i class="fa-solid fa-quote-left absolute top-6 left-6 text-white/5 text-4xl"></i>
-                                                
-                                                <p class="font-body text-lg md:text-xl text-gray-300 leading-relaxed font-light relative z-10">
-                                                    "Je vous ai réunis aujourd'hui pour faire un point d'étape. Les derniers retours du marché exigent une adaptation rapide de notre part.<br><br>
-                                                    Je connais la charge de travail actuelle de vos équipes, mais nous ne pouvons pas nous permettre de temporiser. Nous allons devoir réviser nos priorités pour le mois à venir.<br><br>
-                                                    Je vous demande de faire preuve d'agilité et de me remonter les points de blocage éventuels d'ici ce soir. On avance ensemble."
-                                                </p>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- BOUTON DÉMARRER (Uniquement Étape 1) -->
-                                        <div x-show="step === 1" class="text-center animate-fadeIn">
-                                            <button @click="startRecording()" class="group relative px-10 py-5 bg-white text-void font-bold uppercase tracking-widest text-xs hover:bg-neon hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4 mx-auto w-full md:w-auto">
-                                                <i class="fa-solid fa-microphone group-hover:scale-110 transition-transform"></i> 
-                                                <span>Commencer le diagnostic</span>
-                                            </button>
-                                        </div>
-                                        
-                                        <!-- ANIMATION D'ENREGISTREMENT ET BOUTON STOP (Uniquement Étape 2) -->
-                                        <div x-show="step === 2" x-cloak class="text-center animate-fadeIn">
-                                            <!-- Onde sonore -->
-                                            <div class="flex items-end justify-center gap-1.5 h-12 mb-6">
-                                                <template x-for="i in 15">
-                                                    <div class="w-2 bg-red-500 rounded-full" :style="`height: ${Math.random() * 100}%; animation: equalizer 0.6s infinite ease-in-out ${i * 0.05}s`"></div>
-                                                </template>
-                                            </div>
-                                            
-                                            <!-- Chronomètre -->
-                                            <div class="text-4xl font-mono text-white mb-8" x-text="timerStr">00:00</div>
-                                            
-                                            <!-- Bouton Arrêter -->
-                                            <button @click="stopRecording()" class="px-10 py-4 bg-red-500/10 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all uppercase text-xs font-bold tracking-widest mx-auto flex items-center justify-center gap-3">
-                                                <i class="fa-solid fa-stop"></i> Terminer la lecture
-                                            </button>
-                                        </div>
+                                        <!-- ZONE D'AUDIT ÉPURÉE (Téléprompteur + Smart Dock) -->
+<div x-show="step === 1 || step === 2" class="animate-fadeIn max-w-2xl mx-auto flex flex-col items-center">
+    
+    <!-- 1. LE TEXTE (Style Téléprompteur) -->
+    <div class="w-full mb-12 text-left relative px-6 md:px-0">
+        <!-- Ligne discrète sur le côté pour structurer la lecture -->
+        <div class="absolute left-0 md:-left-6 top-2 bottom-2 w-0.5 bg-gradient-to-b from-neon to-transparent opacity-50" :class="step === 2 ? 'from-red-500' : 'from-neon'"></div>
+        
+        <p class="font-heading text-sm text-gray-500 tracking-[0.3em] uppercase mb-6" x-show="step === 1">
+            Lisez ce texte à voix haute :
+        </p>
+
+        <p class="font-body text-xl md:text-2xl text-gray-300 leading-[1.8] font-light transition-all duration-500" :class="step === 2 ? 'text-white' : 'text-gray-400'">
+            "Je vous ai réunis aujourd'hui pour faire un point d'étape. Les derniers retours du marché exigent une adaptation rapide de notre part.<br><br>
+            Je connais la charge de travail de vos équipes, mais nous ne pouvons pas temporiser. Nous allons réviser nos priorités pour le mois à venir.<br><br>
+            Je vous demande de faire preuve d'agilité et de me remonter les points de blocage d'ici ce soir. On avance ensemble."
+        </p>
+    </div>
+
+    <!-- 2. LE SMART DOCK (Barre de contrôle minimaliste) -->
+    <div class="bg-paper border border-white/10 rounded-full p-2 flex items-center justify-between w-full max-w-md shadow-2xl transition-colors duration-500"
+         :class="step === 2 ? 'border-red-500/30 bg-red-500/5' : ''">
+         
+         <!-- Partie Gauche : Statut & Chrono -->
+         <div class="flex items-center pl-4">
+             <!-- Mode Attente -->
+             <div x-show="step === 1" class="flex items-center gap-3">
+                 <div class="w-2 h-2 rounded-full bg-gray-600"></div>
+                 <span class="text-[10px] font-mono uppercase tracking-widest text-gray-500">Prêt pour l'analyse</span>
+             </div>
+             
+             <!-- Mode Enregistrement -->
+             <div x-show="step === 2" class="flex items-center gap-4" x-cloak>
+                 <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                 <span class="text-sm font-mono text-red-500 font-bold" x-text="timerStr">00:00</span>
+                 
+                 <!-- Mini onde sonore intégrée discrètement -->
+                 <div class="flex items-end gap-[2px] h-3 opacity-80 mb-0.5">
+                     <div class="w-[2px] bg-red-500 animate-[equalizer_0.5s_infinite]"></div>
+                     <div class="w-[2px] bg-red-500 animate-[equalizer_0.5s_infinite_0.1s]"></div>
+                     <div class="w-[2px] bg-red-500 animate-[equalizer_0.5s_infinite_0.2s]"></div>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Partie Droite : Boutons d'Action -->
+         <div>
+             <!-- Bouton Démarrer -->
+             <button x-show="step === 1" @click="startRecording()" 
+                     class="bg-white text-void hover:bg-neon hover:text-white px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+                 <i class="fa-solid fa-microphone text-sm"></i> <span>Démarrer</span>
+             </button>
+             
+             <!-- Bouton Terminer -->
+             <button x-show="step === 2" @click="stopRecording()" x-cloak
+                     class="bg-red-500 text-white hover:bg-red-600 px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                 <i class="fa-solid fa-stop text-sm"></i> <span>Analyser</span>
+             </button>
+         </div>
+    </div>
+
+</div>
                 
                 
                 
